@@ -8,3 +8,6 @@ Select blank lines:
 
 # Imprimir el último directorio del current path. awk -F define el delimiter y print imprime el field ($NF es el numer of fields)
 pwd | awk -F/ '{print $NF}'
+
+# Imprimir las siguientes 5 lineas despues de PATTERN
+awk '/PATTERN/ {for(i=1; i<=5; i++) {getline; print}}' inputfile
