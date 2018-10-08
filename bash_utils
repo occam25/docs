@@ -1,0 +1,21 @@
+
+# Imprimir el último directorio del current path. awk -F define el delimiter y print imprime el field ($NF es el numer of fields)
+pwd | awk -F/ '{print $NF}'
+
+
+function short_path(){
+	pwd | awk -F/ '{print $NF}'
+}
+
+function git_branch () {
+	git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
+}
+
+function git_prompt(){
+	PS1='\[\033[00m\]:\[\033[01;34m\][$(short_path)]\[\033[0;32m\]($(git_branch))\[\033[00m\]\$ '
+}
+
+function reset_prompt(){
+	PS1='${debian_chroot:+($debian_chroot)}\[\e[34;1m\][\u@\H \W]\$\[\e[37;1m\] '
+}
+

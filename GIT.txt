@@ -1,0 +1,115 @@
+Branch name:
+SVC-número_de_ticket-nombredelarama
+
+git stash
+git stash pop
+
+# Desde una branch, diferencia con master:
+git diff --name-status master 	: ficheros que han cambiado
+git diff master			: cambios en el código
+git diff 1b3452f 2ab55bf	: diferencia entre commits
+
+git difftool -d master..fifthplay/SVC-8618_SRV_setpoint_control   	: shows a complete diff between the two branches (I have configured meld as a difftool so I get a nice UI)
+git difftool -d master...fifthplay/SVC-8618_SRV_setpoint_control	: shows a diff based on all commits that are in SVC-8618_SRV_setpoint_control that are added after merge, i.e. it will show a 										  diff as if SVC-8618_SRV_setpoint_control was rebased on master
+# COMPARAR DOS BRANCHES
+git difftool -d SVC-8687_Approximate_electrical_energy_with_instant_power..SVC-8705_Dimmer_integration
+
+# Hacer push the una branch
+git push -u fifthplay SVC-8618_SRV_setpoint_control
+
+# Hacer rebase de una branch a master: desde la branch ejecutar
+git rebase master
+
+# Revert all uncommitted changes
+git reset --hard HEAD
+
+# List all commits from all branches
+git rev-list --remotes
+git rev-list --all --remotes --pretty
+
+# Rebase one branch into another
+git checkout my_branch
+git rebase --interact destination_branch
+(delete unwonted commits and save)
+
+
+
+git diff -> cambios que se han hecho en la branch actual desde el último commit
+git checkout file.c  -> elimina los cambios hechos al fichero recuperando el fichero comiteado
+
+# modificar commit message:
+git commit --amend -m "Commit message"  -> actualiza el ultimo commit con el mensaje pero tambien cambia el hash! por lo que cambia el histórico, si haces push otros lo verán como un commit diferente
+# añadir un fichero al último commit
+git add file.c <-- lo metemos en staging
+git commit --amend   -> igual que antes, cambia el hash y el history -> SOLO HACERLO SI NO SE HA PUSHEADO A OTRA GENTE
+
+
+git log --stat  -> muestra los ficheros cambiados en cada commit!!!! <--------------------------
+
+
+# git cherry-pick -> coge un commit y lo aplica a la branch actual. EJ:
+1. en master haces git log y copias los 6 o 7 primeros caracteres del commit que quieres meter en la otra branch
+2. haces un checkout de la branch
+3. haces: git cherry-pick 1b8993b -> applica el commit de master a la branch actual
+# si no queremos ese commit en master hacemos un git reset:
+1. git checkout master
+2. git reset --soft a5654fb  -> el commit al que queremos ir (reseteando los posteriores). Soft elimina el/los commits pero mantiene los cambios en staging por si se quieren commitear de nuevo
+			     -> --mixed (default). Elimina el commit, los cambios los pone bien en staging bien en el working directory
+		 	     -> --hard  Elimina el commit y los cambios de los tracked files. Los untracked files los deja en paz
+# Eliminar cualquier directorio o fichero en untracked (por ejemplo si por error descomprimes un archivo comprimido en el repo de git):
+git clean -df  (f de force)
+
+
+git reflog -> muestra el log de todo lo hecho. El garbage collector lo elimina al cabo de unos días. Sirve para recuperar elementos borrados
+git checkout 45f73ba3 -> recupero commit eliminado, pero estoy en deatached HEAD, tengo que crear una branch nueva para guardarlos
+git branch nueva_branch
+
+
+# git revert -> crea un nuevo commit encima de los anteriores que revierte los cambios
+git revert 1b65f63a -> commit que quiero revertir. Se crea un nuevo commit que revierte el commit especificado. Así, si alguien ya hizo pull de tu repo, al siguiente pull se revertiran los cambios tb para el
+
+
+
+
+git config --global user.name "Javier Casas"
+git config --global user.email "javier.casasmaring@niko.eu"
+git config --list
+
+git init  -> crea el directorio .git e inicializa el repo local. Si queremos dejar de usar git en ese directorio simplemente borramos esa carpeta
+
+git reset file.c -> saca file.c de staging y lo deja como untracked en el working directory
+git reset -> lo mismo pero con todos los ficheros de staging
+
+# Clonar repo
+git clone <url> <where to clone>
+git clone /path_to_repo/repo.git .  -> tb se puede usar un path para el repo
+
+git remote -v -> lista información del repositorio 
+git branch -a -> todas las branches locales y remotas
+
+
+git pull origin master -> origin: nombre del repo remoto. master: nombre de la branch que queremos pullear
+git push origin master -> origin: nombre del repo remoto. master: nombre de la branch que queremos pushear
+
+git push -u origin branch_name  -> hace un push de branch_name a origin. El flag -u "linka" la branch a ese repo para que luego se pueda hacer el push y el pull simplemente con: git push / git pull
+
+Hacer merge de una branch a master:
+git checkout master
+git merge branch_name
+
+Borrar branch local:
+git branch -d branch_name
+
+Borrar branch del repositorio remoto:
+git push origin --delete branch_name  (o tambien: git push origin :branch_name)
+
+git push fifthplay --delete SVC-8705_Dimmer_integration  (git push fifthplay :SVC-8705_Dimmer_integration)
+git push -u fifthplay SVC-8705_Dimmer_integration
+
+
+
+
+
+
+
+

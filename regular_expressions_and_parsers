@@ -1,0 +1,10 @@
+
+Select lines NOT containing string: dczwave
+^((?!dczwave).)*$
+
+Select blank lines:
+^(?:[\t ]*(?:\r?\n|\r))+
+
+
+# Imprimir el último directorio del current path. awk -F define el delimiter y print imprime el field ($NF es el numer of fields)
+pwd | awk -F/ '{print $NF}'
