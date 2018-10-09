@@ -12,7 +12,10 @@ do
 	fi
 
 	wget -U "Opera 11.0" $URL
-
+	if [ "$?" != "0" ]; then
+		sleep 60
+		continue;
+	fi
 	MD5SUM=$(/usr/bin/md5sum $DOWNLOADED_SITE | cut -f1 -d" ")
 
 	echo $MD5SUM

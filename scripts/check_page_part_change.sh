@@ -13,13 +13,18 @@ do
 	fi
 
 	wget -U "Opera 11.0" $URL
+	if [ "$?" != "0" ]; then
+		sleep 60
+		continue;
+	fi  
+
 
 	#MD5SUM=$(/usr/bin/md5sum $DOWNLOADED_SITE | cut -f1 -d" ")
 	MD5SUM=$(cat $DOWNLOADED_SITE | awk '/Aprobados 2º ejercicio/ {for(i=1; i<=15; i++) {getline; print}}' | /usr/bin/md5sum | cut -f1 -d" ")
 	echo $MD5SUM
 	echo $MD5SUM_ORIG
 	if [ "$MD5SUM" != "$MD5SUM_ORIG" ]; then
-		paplay /usr/share/sounds/ubuntu/ringtones/Alarm\ clock.ogg
+		paplay /usr/share/sounds/ubuntu/ringtones/Ubuntu.ogg
 	fi
 
 	sleep 60
