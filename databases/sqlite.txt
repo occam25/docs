@@ -1,0 +1,4 @@
+.mode column
+.header on
+.tables
+pragma table_info(table_name); // show table information
