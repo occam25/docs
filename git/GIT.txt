@@ -107,6 +107,8 @@ git push fifthplay --delete SVC-8705_Dimmer_integration  (git push fifthplay :SV
 git push -u fifthplay SVC-8705_Dimmer_integration
 
 
+# Hacer fetch de las tags
+git fetch --tags fifthplay
 
 
 
