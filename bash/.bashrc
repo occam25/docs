@@ -167,9 +167,6 @@ alias ls='ls -hF --color=auto'
 # make the dir command work kinda like in windows (long format)
 alias dir='ls --color=auto --format=long'
 
-# make grep highlight results using color
-export GREP_OPTIONS='--color=auto'
-
 # Add some colour to LESS/MAN pages
 export LESS_TERMCAP_mb=$'\E[01;31m'
 export LESS_TERMCAP_md=$'\E[01;33m'
