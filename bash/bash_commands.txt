@@ -48,3 +48,6 @@ user@ubuntu-1604:~$ echo > /dev/tcp/192.168.99.99/222
 -bash: /dev/tcp/192.168.99.99/222: Connection refused
 
 user@ubuntu-1604:~$ echo > /dev/tcp/192.168.99.99/22
+
+Reproducir mp3 (entre otros):
+mpg123 startup.mp3
