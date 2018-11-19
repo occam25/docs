@@ -1,0 +1,7 @@
+How to repair a pendrive that was corrupted after unplugging it badly. Error message: $mftmirr does not match $mft (record 0). failed to mount '/dev/sdb1' input/output error
+
+Source:
+https://wmarkito.wordpress.com/2010/12/29/how-to-fix-mftmirr-does-not-match-mft-record-0/
+
+
+sudo ntfsfix /dev/partitionName
