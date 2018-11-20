@@ -1,5 +1,5 @@
-Branch name:
-SVC-número_de_ticket-nombredelarama
+# Ver histórico de cambios en un determinado fichero:
+git log -p -- file
 
 git stash
 git stash pop
