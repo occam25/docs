@@ -1,5 +1,6 @@
 # Ver histórico de cambios en un determinado fichero:
-git log -p -- file
+git log -p -- <file>
+git log --follow -p -- <file> : lo mismo pero te dice si el fichero fue renombrado
 
 git stash
 git stash pop
