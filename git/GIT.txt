@@ -2,6 +2,12 @@
 git log -p -- <file>
 git log --follow -p -- <file> : lo mismo pero te dice si el fichero fue renombrado
 
+# Listar tags (con -n muestra la primera linea del tag)
+git tag -n
+git tag -n -l <tag_name>
+git cat-file tag <tag_name>   : muestra info del tag
+
+
 git stash
 git stash pop
 
