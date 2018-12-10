@@ -1,0 +1,5 @@
+# Para no tener que meter el password al conectar por ssh
+1. En laptop (si no existe ya id_rsa.pub):
+ssh-keygen
+2. Pasar el fichero id_rsa.pub al sistema embebido y añadir su contenido al .ssh/authorized_keys del sistema embebido
+cat id_rsa.pub >> .ssh/authorized_keys
