@@ -1,0 +1,12 @@
+#/bin/bash
+
+# Start Development Terminals (sdt)
+# This script opens two new terminals, one with teste environment and another with emperor environment
+APP_PATH=/home/javi/develop/embedded/applications
+if [ -z $1 ]; then
+	gnome-terminal -x sh -c "export BASH_POST_RC=\"teste\"; exec bash"
+	gnome-terminal -x sh -c "export BASH_POST_RC=\"empe\"; exec bash"
+else
+	gnome-terminal -x sh -c "export BASH_POST_RC=\"teste; cd $APP_PATH/$1\"; exec bash"
+	gnome-terminal -x sh -c "export BASH_POST_RC=\"empe; cd $APP_PATH/$1\"; exec bash"
+fi
