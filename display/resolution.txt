@@ -1,0 +1,26 @@
+# Cuando el monitor te aparece como "Unknown display" y no aparece la opción con la resolución deseada:
+
+# Mostrar displays y resoluciones
+xrandr
+
+# Obtener modeline para la resolución requerida (1920x1080 60Hz)
+sudo cvt 1920 1080 60
+
+  Ejemplo de salida de comando:
+  # 1920x1080 59.96 Hz (CVT 2.07M9) hsync: 67.16 kHz; pclk: 173.00 MHz
+  Modeline "1920x1080_60.00"  173.00  1920 2048 2248 2576  1080 1083 1088 1120 -hsync +vsync
+
+# Crear modo con la resolución buscada (copiando el modeline de la salida del comando anterior)
+xrandr --newmode "1920x1080_60.00"  173.00  1920 2048 2248 2576  1080 1083 1088 1120 -hsync +vsync
+
+# Añadir el modo creado al monitor (en este caso al monitor DP-2 que muestra el comando xrandr, que, en este caso, era la pantalla)
+sudo xrandr --addmode DP-2 1920x1080_60.00
+
+Ya se puede ir a la configuración y aparecerá esa resolución disponible para ese monitor
+
+
+### para que el cambio se aplique en cada arranque del sistema:
+# crear fichero ~/.xprofile con los comandos
+
+xrandr --newmode "1920x1080_60.00"  173.00  1920 2048 2248 2576  1080 1083 1088 1120 -hsync +vsync
+xrandr --addmode DP-2 1920x1080_60.00
