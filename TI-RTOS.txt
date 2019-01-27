@@ -1,0 +1,24 @@
+Module_create / Module_delete -> where Module can be Hwi, Swi, Semaphore, Task, Timer, Clock, Event, Mailbox... etc
+
+
+Semaphore:
+#define COUNT 0
+Semaphore_Handle hMySem;
+hMySem = Semaphore_create(COUNT, NULL, &eb);  // Always check return value of create APIs! (eb -> error block)
+
+Semaphore_post(hMySem);
+Semaphore_pend(hMySem, BIOS_WAIT_FOREVER);
+Semaphore_delete(hMySem);
+
+Task:
+Task_Handle hMyTask;
+Task_Params taskParams; // it includes the heap location, the priority, the stack pointer and size of the stack, environment pointer, and 			// the name of the task
+
+Task_Params_init(&taskParams);
+taskParams.priority = 3;
+
+hMyTask = Task_create(myFun, &taskParams, &eb);
+Task_delete(&hMyTask);
+
+Using System_printf:
+System_printf("buf: no resource\n"); // prints to the console window. Uses the SysMin module. Outputs results when System_flush() occurs (like when BIOS exits) or _flush is called
