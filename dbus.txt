@@ -1,0 +1,2 @@
+// Send dbus message with a string param
+dbus-send --system --type=signal / com.example.signal_name string:"hello"
