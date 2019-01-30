@@ -1,5 +1,5 @@
+############################ Module creation
 Module_create / Module_delete -> where Module can be Hwi, Swi, Semaphore, Task, Timer, Clock, Event, Mailbox... etc
-
 
 Semaphore:
 #define COUNT 0
@@ -129,3 +129,54 @@ c. Lock one resource at a time or ALL of them
 5. Threads at SAME priority
 Todo ventajas, pueden compartir recursos sin problema porque no hace preempt entre ellos.
 Pero cuidado! si luego llegas y cambias la prioridad de uno de ellos sin darte cuenta de que están compartiendo recursos, todos los problemas vistos podrán pasar y no sabremos porqué!
+
+
+############################ ERROR BLOCK
+Error_Block eb;
+Error_init(&eb);
+La funcion Error_check comprueba eb
+
+############################ MEMORY ALLOCATION
+x = Memory_alloc(myHeap, size, align, &eb); 
+x = Memory_alloc(NULL, size, align, &eb); // it uses the default heap
+
+Crear Heap: 
+Static: en configuracion, memory management, heaps, HeapMem
+Dynamic:
+HeapMem_Params_init(&prms);
+prms.size = 256;
+myHeap = HeapMem_create(&prms, &eb);
+
+Usage:
+buf1 = Memory_alloc(myHeap, 64, 0, &eb);
+
+SYS/BIOS Heap types:
+1. HeapMem:
+El de toda la vida. El de por defecto
+PROS: 
+Most flexible (allows allocation of variable-sized blocks, like malloc())
+Ideal when size of memory is not known until runtime
+CONS: 
+Not deterministic (memory manager traverses linked list to find blocks)
+Not atomic (not reentrant) (an interrupt may disrupt Memory_alloc(), if you are doing an allocation and then you 
+
+are preemted and the other thread also calls to Memory_alloc (or malloc), then you are in troubles.. don't use in 
+
+a Hwi or Swi)
+Fragmentation occurs after frequent allocate/free
+
+2. HeapBuf
+Allows allocation of fixed-size blocks (no fragmentation) You create like a pool of buffers
+Deterministic, no reentrancy problems
+Ideal when using a varying number of fixed-size blocks (Ej: 6 buffers of 64 bytes each)
+For blockSize = 64: ask for 16, get 64. Ask for 66, get NULL
+prms.blockSize = 64;
+prms.numBlocks = 8;
+prms.bufSize = 256;
+myBuf = HeapBuf_create(&prms, &eb);
+buf1 = Memory_alloc(myBuf, 64, 0, &eb);
+HeapBuf_create(), HeapBuf_delete()
+
+3. HeapMultiBuf
+One buffer pool that contains different buffer sizes
+Can be configured to "block borrow" from the next size up
