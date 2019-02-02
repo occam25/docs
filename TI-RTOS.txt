@@ -2,6 +2,7 @@
 Module_create / Module_delete -> where Module can be Hwi, Swi, Semaphore, Task, Timer, Clock, Event, Mailbox... etc
 
 Semaphore:
+#include <ti/sysbios/knl/Semaphore.h>
 #define COUNT 0
 Semaphore_Handle hMySem;
 hMySem = Semaphore_create(COUNT, NULL, &eb);  // Always check return value of create APIs! (eb -> error block)
@@ -11,6 +12,7 @@ Semaphore_pend(hMySem, BIOS_WAIT_FOREVER);
 Semaphore_delete(hMySem);
 
 Task:
+#include <ti/sysbios/knl/Task.h> 
 Task_Handle hMyTask;
 Task_Params taskParams; // it includes the heap location, the priority, the stack pointer and size of the stack, environment pointer, and 			// the name of the task
 
