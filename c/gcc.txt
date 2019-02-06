@@ -1,0 +1,2 @@
+
+gcc file.c -E     : muestra la salida del preprocesador

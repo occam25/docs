@@ -5,6 +5,8 @@ Select lines NOT containing string: dczwave
 Select blank lines:
 ^(?:[\t ]*(?:\r?\n|\r))+
 
+Find two strings:
+(Node status down)|(disconnected)
 
 # Imprimir el último directorio del current path. awk -F define el delimiter y print imprime el field ($NF es el numer of fields)
 pwd | awk -F/ '{print $NF}'

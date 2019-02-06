@@ -1,0 +1,184 @@
+############################ Module creation
+Module_create / Module_delete -> where Module can be Hwi, Swi, Semaphore, Task, Timer, Clock, Event, Mailbox... etc
+
+Semaphore:
+#include <ti/sysbios/knl/Semaphore.h>
+#define COUNT 0
+Semaphore_Handle hMySem;
+hMySem = Semaphore_create(COUNT, NULL, &eb);  // Always check return value of create APIs! (eb -> error block)
+
+Semaphore_post(hMySem);
+Semaphore_pend(hMySem, BIOS_WAIT_FOREVER);
+Semaphore_delete(hMySem);
+
+Task:
+#include <ti/sysbios/knl/Task.h> 
+Task_Handle hMyTask;
+Task_Params taskParams; // it includes the heap location, the priority, the stack pointer and size of the stack, environment pointer, and 			// the name of the task
+
+Task_Params_init(&taskParams);
+taskParams.priority = 3;
+
+hMyTask = Task_create(myFun, &taskParams, &eb);
+Task_delete(&hMyTask);
+
+Using System_printf:
+System_printf("buf: no resource\n"); // prints to the console window. Uses the SysMin module. Outputs results when System_flush() occurs (like when BIOS exits) or _flush is called
+
+############################ Inter-Thread communication
+PRODUCER/CONSUMER MODEL
+1. Queue
+Queue_put(&myQ, msg);
+msg = Queue_get(&myQ);
+Producer creates the queue and initialize it. Consumer gets a pointer to that queue to have access, so it is not copy based (more efficient in term of memory use). FIFO. Dynamically, not a fixed size.
+No signaling built in -> the user has to synchronize writer/reader.
+WRITER:
+  Queue_put(&myQ, msg);
+  Semaphore_post(&mySem);
+READER:
+  Semaphore_pend(&mySem, -1);
+  msg = Queue_get(&myQ);
+
+User setup:
+a. Declare Queue in CFG
+b. Define (typedef) structure of Msg
+	struct myMsg {
+		Queue_Elem elem;  // double linked list (el resto es customizable)
+		short *pInBuf;
+		short *pOutBuf;
+	} Msg;
+c. Fill in the Msg - i.e. define "elements"
+d. Send/receive data from the queue
+
+2. Mailboxes
+A fixed-size BIOS object that can contain anything you like
+Fixed length defined by:
+  a. Number of Msg (length of mailbox)
+  b. Message size (MAUs -> Minimum Addressable Units, typically a byte)
+
+Mailbox_post(&Mbx, &Msg, timeout);  // blocks if full
+Mailbox_pend(&Mbx, &Mail, timeout); // blocks if empty
+
+pros: simple FIFO, easy to use, contains built-in semaphore for signaling
+cons: copy-based (both reader/writer own a copy) -> best if used to pass pointers or small Msgs
+
+3 PROTECTING SHARING RESOURCES
+3.1 Modifying BIOS Scheduler Behavior
+pGIE = Hwi_disable();	// turn off global INTs
+Hwi_restore(pGIE);	// restore global INTs
+Swi_disable();	// turn off all Swi's
+Swi_restore();	// restore Swi's
+Task_disable();	// turn off all Tasks
+Task_restore();	// restore Tasks
+Task_setPri();	// Set Task Pri
+There are also xxx_enable() versions but it is safer to use RESTORE (what if the Hwi were disabled already?)
+PROS: comman, simple
+CONS: can cause jitter, latency (you don't turn off the Hwi that can cause the problem, you just turn off ALL of them)
+
+3.2 Mutexes
+In TI-RTOS are implemented using semaphores with an initial count of 1
+Semaphore: Sem
+Initial Count = 1
+
+Task Hi
+Semaphore_pend(Sem);
+// critical section
+Semaphore_post(Sem);
+
+Task Low
+Semaphore_pend(Sem);
+// critical section
+Semaphore_post(Sem);
+
+PROS: common, simple
+CONS: can lead to priority inversion
+Shared semaphores are FIFO (they have a queue associated with them). When more than one task has done a pend in the semaphore and then a post occurs, the first one in the queue gets the semaphore first -> this can lead to PRIORITY INVERSION:
+Si hay una task con prioridad baja que hace el pend primero y se bloquea y luego hace pend una task de prioridad alta, esta se también bloquea y cuando se haga el post la que se ejecutará será la de prioridad baja, ya que fue la primera en hacer el pend.
+Esto no parece muy grave, pero si además hay un montón de tasks de prioridad intermedia listas para ejecutarse cuando se hace el post (por ejemplo en una Hwi), estas harán preempt de la task de baja prioridad, impidiendo que libere el semaforo e, indirectamente, que se ejecute la task de alta prioridad. De esta forma, la task de alta prioridad no se ejecutará hasta que TODAS las tasks de prioridad media hayan acabado y la de prioridad baja acabe y haga post del semaforo. Este caso sí que puede ser muy significativo y problemático
+-> los semáforos con prioridad ayudan a solventar este problema
+
+3.3 Task_SetPri
+Si, al entrar en la sección crítica, pongo la prioridad de la task de prioridad baja a la misma que la task de prioridad alta con la que comparto el recurso hago que esta no pueda hacer preempt y el recurso compartido esté así protegido.
+Al entrar haría Task_getPri() de la task high y setearía esa prioridad en la task actual con Task_SetPri(). A la salidad de la sección crítica restablecería la prioridad a la que hubiera inicialmente, también con Task_SetPri();
+
+PROS: no mutex/semaphore required, no priority inversion
+CONS: que pasa si la task de prioridad alta no necesitaba ejecutarse? hemos hecho todo este trabajo de seteo de prioridades para nada...
+
+3.4 Priority Mutex Gates
+
+gateKey = GateMutexPri_enter(gateMutexPri);  // enter Gate
+// Critical section
+GateMutexPri_leave(gateMutexPri, gateKey); // exit Gate
+
+Con este código en ambas Tasks (low y high), compartiendo ambas el objeto gateMutexPri, hago lo siguiente:
+Si la task low entra en la gate (en la sección crítica) y la high nunca acontece, no pasa nada más que la low se ejecuta.
+Si la task low entra en la gate y, estando en la sección crítica, la task high hace preempt, al intentar entrar también en la gate, esta task high se bloquea y la task low HEREDA LA PRIORIDAD de la high, con lo que pasa a ejecutarse de nuevo continuando donde lo había dejado. Cuando la task low (con la prioridad heredada a high) sale de la sección crítica (llega a GateMutexPri_leave), su prioridad original se restablece a low y es pre-empted por la task high, quien entra, ahora sí, a la sección crítica y accede al data.
+
+PROS: simple to code, does automatic Task_setPri() of task low. Excelent way to protect resources within BIOS
+
+3.5 Priority-based Semaphores
+Son semaforos que, en vez de ejecutar la task de la queue de task que han hecho pend según FIFO, lo hacen según la prioridad de la task. Así, aunque la task low haya hecho pend antes que la high, cuando llegue un post se ejecutará la high.
+PROS: no Pri. inversion
+CONS: a little slower. No funciona si el post se hace antes que los pend: si se hace un post y la primera task en hacer pend es la de prioridad low, esta adquirirá el recurso y cuando la task high haga pend se bloqueará como en el caso de los mutex anterior y SI SE PODRÁ DAR LA PRIORITY INVERSION
+El instructor intenta usar este tipo de semáforos siempre que puede.
+
+4. Dead locks
+Para evitarlos:
+a. Use timeouts on _pend (and check the retur values to know why it returned)
+b. Elimitante circular _pend
+c. Lock one resource at a time or ALL of them
+
+5. Threads at SAME priority
+Todo ventajas, pueden compartir recursos sin problema porque no hace preempt entre ellos.
+Pero cuidado! si luego llegas y cambias la prioridad de uno de ellos sin darte cuenta de que están compartiendo recursos, todos los problemas vistos podrán pasar y no sabremos porqué!
+
+
+############################ ERROR BLOCK
+Error_Block eb;
+Error_init(&eb);
+La funcion Error_check comprueba eb
+
+############################ MEMORY ALLOCATION
+x = Memory_alloc(myHeap, size, align, &eb); 
+x = Memory_alloc(NULL, size, align, &eb); // it uses the default heap
+
+Crear Heap: 
+Static: en configuracion, memory management, heaps, HeapMem
+Dynamic:
+HeapMem_Params_init(&prms);
+prms.size = 256;
+myHeap = HeapMem_create(&prms, &eb);
+
+Usage:
+buf1 = Memory_alloc(myHeap, 64, 0, &eb);
+
+SYS/BIOS Heap types:
+1. HeapMem:
+El de toda la vida. El de por defecto
+PROS: 
+Most flexible (allows allocation of variable-sized blocks, like malloc())
+Ideal when size of memory is not known until runtime
+CONS: 
+Not deterministic (memory manager traverses linked list to find blocks)
+Not atomic (not reentrant) (an interrupt may disrupt Memory_alloc(), if you are doing an allocation and then you 
+
+are preemted and the other thread also calls to Memory_alloc (or malloc), then you are in troubles.. don't use in 
+
+a Hwi or Swi)
+Fragmentation occurs after frequent allocate/free
+
+2. HeapBuf
+Allows allocation of fixed-size blocks (no fragmentation) You create like a pool of buffers
+Deterministic, no reentrancy problems
+Ideal when using a varying number of fixed-size blocks (Ej: 6 buffers of 64 bytes each)
+For blockSize = 64: ask for 16, get 64. Ask for 66, get NULL
+prms.blockSize = 64;
+prms.numBlocks = 8;
+prms.bufSize = 256;
+myBuf = HeapBuf_create(&prms, &eb);
+buf1 = Memory_alloc(myBuf, 64, 0, &eb);
+HeapBuf_create(), HeapBuf_delete()
+
+3. HeapMultiBuf
+One buffer pool that contains different buffer sizes
+Can be configured to "block borrow" from the next size up
