@@ -14,7 +14,7 @@ sudo cvt 1920 1080 60
 xrandr --newmode "1920x1080_60.00"  173.00  1920 2048 2248 2576  1080 1083 1088 1120 -hsync +vsync
 
 # Añadir el modo creado al monitor (en este caso al monitor DP-2 que muestra el comando xrandr, que, en este caso, era la pantalla)
-sudo xrandr --addmode DP-2 1920x1080_60.00
+xrandr --addmode DP-2 1920x1080_60.00
 
 Ya se puede ir a la configuración y aparecerá esa resolución disponible para ese monitor
 
