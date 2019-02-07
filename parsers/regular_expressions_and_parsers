@@ -13,3 +13,6 @@ pwd | awk -F/ '{print $NF}'
 
 # Imprimir las siguientes 5 lineas despues de PATTERN
 awk '/PATTERN/ {for(i=1; i<=5; i++) {getline; print}}' inputfile
+
+grep ^# /etc/hostapd.conf       : Print lines starting with #
+grep ^[^#] /etc/hostapd.conf    : Print lines not starting with #
