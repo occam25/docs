@@ -6,10 +6,19 @@ Semaphore:
 #define COUNT 0
 Semaphore_Handle hMySem;
 hMySem = Semaphore_create(COUNT, NULL, &eb);  // Always check return value of create APIs! (eb -> error block)
-
 Semaphore_post(hMySem);
 Semaphore_pend(hMySem, BIOS_WAIT_FOREVER);
 Semaphore_delete(hMySem);
+
+Tambien estaticamente:
+Semaphore_Struct semaphore;
+Semaphore_Params params;
+Semaphore_Params_init(&params);
+params.mode = Semaphore_Mode_BINARY;
+Semaphore_construct(&machine->semaphore, 0, &params);
+Semaphore_pend(Semaphore_handle(&machine->semaphore), BIOS_WAIT_FOREVER);
+
+
 
 Task:
 #include <ti/sysbios/knl/Task.h> 
