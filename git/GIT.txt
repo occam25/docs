@@ -30,6 +30,8 @@ git rebase master
 
 # Revert all uncommitted changes
 git reset --hard HEAD
+# Discard last commit
+git reset --hard HEAD^
 
 # Discard changes in file
 git checkout -- file
