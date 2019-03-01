@@ -16,6 +16,7 @@ git diff --name-status master 	: ficheros que han cambiado
 git diff master			: cambios en el código
 git diff 1b3452f 2ab55bf	: diferencia entre commits
 git diff 9652452~ 9652452	: diferencia entre commit y su antecesor
+git diff HEAD^..HEAD		: diferencia con el último commit
 
 git difftool -d master..fifthplay/SVC-8618_SRV_setpoint_control   	: shows a complete diff between the two branches (I have configured meld as a difftool so I get a nice UI)
 git difftool -d master...fifthplay/SVC-8618_SRV_setpoint_control	: shows a diff based on all commits that are in SVC-8618_SRV_setpoint_control that are added after merge, i.e. it will show a 										  diff as if SVC-8618_SRV_setpoint_control was rebased on master
