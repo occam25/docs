@@ -1,0 +1,110 @@
+*Variable Setting (=)*
+
+Set a variable by assigning it a value using the *=* sign. Values must
+be surrounded by double quotes.
+
+*
+VAR = "value"
+*
+
+In this example, *VAR* is set to *value*.
+-
+
+*Early Default Value Assignment (?=)*
+
+A variable can be early-assigned a default value using the *?=* assignment
+operator:
+
+*
+A ?= "1"
+B ?= "2"
+B ?= "3"
+*
+
+In this example *A* will contain *1* if it was not previously set. *B* will
+contain *2* because the *?=* assignment operator is immediate meaning
+that if there are multiple *?=* assignments to a single variable, the
+first one will be used.
+-
+
+*Late Default Value Assignment (??=)*
+
+A variable can be late-assigned a default value using the *??=* assignment
+operator:
+
+*
+A ??= "1"
+B ??= "2"
+B ??= "3"
+*
+
+In this example *A* will contain *1* if it was not previously set. *B* will
+contain *3* because the *??=* assignment operator is a late or lazy
+assignment operator and assignment will not take place until the end of the
+parsing process. If there are multiple *??=* assignments to a single
+variable, the last one will be used.
+-
+
+*Variable Expansion*
+
+Bitbake supports referencing a variables content similar to shell
+scripting.
+
+*
+A = "jumps over"
+B = "The quick brown fox ${A} the lazy dog."
+echo $B
+*
+
+This results in the the text *The quick brown fox jumps over the lazy
+dog.* printed to the console.
+-
+
+*Immediate Variable Expansion (:=)*
+
+Typically, Bitbake expands a variable when it is used. The *:=* assignment
+operator however expands the variable immediately when it is assigned.
+
+*
+A = "11"
+B = "B:${A}"
+A = "22"
+C := "C:${A}"
+echo $C $B
+*
+
+This results in *C:22 B:22* printed to the console since the content of *
+A* is expanded immediately on assignment to variable *C*. Variable *B* did
+not get expanded until it was actually used in the *echo*statement.
+-
+
+*Appending (+=) and Prepending (=+)*
+
+The *+=* and *=+* append and prepend variables respectively while adding
+a single space between the values.
+
+*
+A = "12"
+A += "34"
+B = "89"
+B =+ "67"
+*
+
+This results in variable *A* containing *12 34* and variable *B*
+containing *67 89*.
+-
+
+*Appending (.=) and Prepending (=.) without Spaces*
+
+The *.=* and *=.* work like the above appending and prepending operators
+however without placing an additional space between the values.
+
+*
+A = "12"
+A .= "34"
+B = "89"
+B =. "67"
+*
+
+This results in variable *A* containing *1234* and variable *B*
+containing *6789*.
