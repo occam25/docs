@@ -1,0 +1,2 @@
+
+apt-cache policy paquete : informacion sobre el paquete (version.. etc)
