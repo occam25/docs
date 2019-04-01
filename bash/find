@@ -1,0 +1,4 @@
+# Busca en tmp ficheros que comiencen por 'sess' que tengan una antiguedad superior a 48h (-mtime +1) y borralos
+find /tmp/ -name 'sess*' -type f -mtime +1 -exec rm -rf {} \;
+
+(-mtime 0 : en las ultimas 24h, -mtime +0 : de las ultimas 24h en adelante)
