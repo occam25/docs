@@ -1,0 +1,44 @@
+docker run -it debian bash  					: crea un contenedor basado en una imagen de debian y ejecuta un bash para tener shell dentro de ella
+docker run --name test -h test -it ubuntu:14.04 /bin/bash	: lo mismo pero especificando el nombre del contenedor y del host que tendrá el sistema
+docker inspect test						: muestra información del contenedor 
+docker ps -a 							: lista los comandos ejecutados en cada imagen en formato json (rutas a ficheros, 									  configuración del sistema y de networking...
+docker images							: lista images locales
+docker pull ubuntu:14.04					: se descarga una imagen de docker para ubuntu 14.04
+docker rm <name>						: borra el contenedor de nombre <name> (el que aparece al hacer docker ps -a)
+docker rm <id>							: borra el contenedor con ese id (basta con introducir los primeros digitos del id)
+docker commit test ubuntu_apache				: crea una imagen llamada ubuntu_apache basada en la imagen existente test donde hemos instalado apache2
+docker run -d --name web -h web ubuntu_apache \
+       bash -c "apache2ctl -D FOREGROUND 			: ejecuta en modo deattached (-d) un contenedor con nombre web y hostname web basado en la imagen ubuntu_apache que ejecute un 
+								  bash y, en él, el comando apache2ctl -D FOREGROUND
+docker top web							: lista los comandos que se están ejecutando en el contenedor llamado web
+docker logs web							: muestra la salida del comando que se ha lanzado
+
+docker exec web bash -c "apt-get update && apt-get install vim"	: exec ejecuta un comando en un contenedor que esté en ejecución (en este caso el contenedor llamado web)
+								  (añadiendo -it ejecutamos el comando en modo interactivo, entrando a la consola) Esto no afecta al comando actual del contenedor
+docker exec -it web bash					: simplemente ejecutamos un bash para acceder a la consola del contenedor llamado web (en el video exporta en consola la variable
+								  TERM para poder usar nano (export TERM=xterm))
+docker stop web							: para el contenedor
+docker start web						: inicia el contenedor (con el comando que está configurado en la imagen, que lo hemos configurado previamente)
+
+docker attach --sig-proxy=false web				: nos attacheamos al proceso que esté en ejecución en el contenedor web
+docker logs web							: muestra lo último que ha devuelto el commando que se está ejecutando en ese contenedor
+docker logs -f web						: muestra lo que devuelve el commando que se está ejecutando en el contenedor
+
+docker cp fichero web:/root/					: copia el fichero local 'fichero' al contenedor web en la ruta /root/
+docker cp web:/root/fichero .					: copia el fichero 'fichero' del contenedor web en la ruta /root/fichero a la carpeta actual
+
+hub.docker.com
+docker login							: hacer login en el registry (por defecto hub.docker.com)
+docker pull mijack/nagios					: se baja la imagen nagios del usuario mijack
+
+docker tag ubuntu_apache mijack/ubuntu_apache			: tagea la imagen ubuntu_apache como mijack/ubuntu_apache  (mijack es el nombre de usuario de hub.docker.com)
+docker push mijack/ubuntu_apache				: sube la imagen a la cuenta de hub.docker.com
+
+docker export -o web.tar web					: exporta el sistema de ficheros del contenedor a un fichero tar
+docker import web.tar test_web					: importa a una nueva imagen test_web el sistema de ficheros web.tar
+
+
+
+
+
+

@@ -1,0 +1,3 @@
+Workspace switcher: 				<Super>s
+Start windows spread: 				<Super>w
+Start windows spread for all windows: 		<Super><Shift>w

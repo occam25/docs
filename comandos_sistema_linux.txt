@@ -1,0 +1,2 @@
+cat /etc/lsb-release 			: muestra información de la release instalada 
+apache2ctl -D FOREGROUND		: ejecutar apache en primer plano
