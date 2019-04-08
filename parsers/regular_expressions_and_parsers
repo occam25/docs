@@ -16,3 +16,12 @@ awk '/PATTERN/ {for(i=1; i<=5; i++) {getline; print}}' inputfile
 
 grep ^# /etc/hostapd.conf       : Print lines starting with #
 grep ^[^#] /etc/hostapd.conf    : Print lines not starting with #
+
+# Select multiple words (eg: one, two, three)
+\b(?:one|two|three)\b
+
+# Select lines that contain any of these words (ont, two, three)
+^.*\b(one|two|three)\b.*$
+
+# Select lines that NOT contain any of these words (ont, two, three)
+^(?!.*(one|two|three)).*$
