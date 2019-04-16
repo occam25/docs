@@ -1,0 +1,8 @@
+check process dcenocean with pidfile /var/run/dcenocean.pid
+	include "/etc/monit.daemon.base"
+	if cpu > 10% for 2 cycles then alert
+	if cpu > 20% for 5 cycles then restart
+	if cpu > 20% for 5 cycles then exec "/usr/bin/monit-service-alert"
+	if totalmem > 20 MB for 5 cycles then restart
+	if totalmem > 20 MB for 5 cycles then exec "/usr/bin/monit-service-alert"
+	group services

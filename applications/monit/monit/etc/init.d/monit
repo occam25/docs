@@ -1,0 +1,33 @@
+#! /bin/sh
+#
+### BEGIN INIT INFO
+# Provides:          monit
+# Required-Start:    
+# Should-Start:      
+# Required-Stop:     
+# Should-Stop:
+# Default-Start:     3 5
+# Default-Stop:      
+# Short-Description: Process monitor daemon
+# Description:       Process monitor daemon
+### END INIT INFO
+
+# daemon config
+MONIT_STATE="/var/log/monit.state"
+
+DAEMON_BIN="/usr/bin/monit"
+DAEMON_PID="/var/run/monit.pid"
+DAEMON_ARGS="-p $DAEMON_PID -s $MONIT_STATE"
+DAEMON_SUPPORTS_RELOAD="yes"
+
+# pre start function
+if [ "$1" == "start" ]; then
+	# FG-2710: clear monit state on boot 
+	if [ -f $MONIT_STATE ]; then
+		UPTIME=$(cat /proc/uptime | cut -d' ' -f1)
+		[ ${UPTIME%%.*} -le 90 ] && rm $MONIT_STATE
+	fi
+	chown root:root /etc/monitrc
+fi
+
+. /etc/scripts/start-stop.actions

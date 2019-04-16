@@ -1,0 +1,8 @@
+1. Error al ejecutar ./configure: 'configure: error: cannot find install-sh, install.sh, or shtool in "." "./.." "./../.."'
+Solucion: ejecutar 'autoreconf -i' para que instale rependencias (antes he instalado 'sudo apt-get install automake autoconf libtool')
+
+2. En make:  error: ‘thread_id’ defined but not used [-Werror=unused-function]
+aclocal && autoconf && automake --add-missing && CFLAGS="-Wno-unused-function" ./configure && make
+
+3. Error: 'ERROR:  read: Input/output error' al ejecutar openfortivpn
+Solucion: sudo apt-get install ppp

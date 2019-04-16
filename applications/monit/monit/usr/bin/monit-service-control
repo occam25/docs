@@ -1,0 +1,32 @@
+#!/bin/sh
+
+# logging
+LOG_ERR="logger -p local0.err -t $0 -s"
+
+# use the first argument as service name and the second 
+# as service action, if supplied
+[ -n "$1" ] && SERVICE_NAME="$1"
+[ -n "$2" ] && SERVICE_ACTION="$2"
+
+# use monit enviroment variables if no arguments supplied
+[ -z "$SERVICE_NAME" ] && SERVICE_NAME="$MONIT_SERVICE"
+
+if [ -z "$SERVICE_ACTION" ]; then
+	if [ "$MONIT_EVENT" == "Started" ]; then	
+		SERVICE_ACTION="start"
+	elif [ "$MONIT_EVENT" == "Stopped" ]; then
+		SERVICE_ACTION="stop"
+	fi
+fi
+
+# validate service
+if ! [ -f /etc/init.d/$SERVICE_NAME -a -x /etc/init.d/$SERVICE_NAME ]; then
+	$LOG_ERR "/etc/init.d/$SERVICE_NAME doesn't exist or not executable"
+	exit 1
+fi
+
+# log action
+/usr/bin/monit-service-alert
+
+
+/etc/init.d/$SERVICE_NAME $SERVICE_ACTION

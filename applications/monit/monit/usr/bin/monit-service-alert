@@ -1,0 +1,42 @@
+#!/bin/sh
+
+# logging
+LOG_ERR="logger -p local0.err -t $0 -s"
+
+# send a start/stop fault to the backend
+function send_start_stop_fault()
+{
+	ERROR_CODE="ERR_DAEMON_UNKNOWN"
+
+	if [[ $2 == *mem* ]]
+	then
+			ERROR_CODE="ERR_DAEMON_MEMORY_USAGE_EXCEEDED"
+	elif [[ $2 == *cpu* ]]
+	then
+			ERROR_CODE="ERR_DAEMON_CPU_USAGE_EXCEEDED"
+	elif [[ $2 == *Started* ]]
+	then
+			ERROR_CODE="ERR_DAEMON_START"
+	elif [[ $2 == *Stopped* ]]
+	then
+			ERROR_CODE="ERR_DAEMON_STOP"
+	fi
+
+	/usr/sbin/report-fault "$1" "$ERROR_CODE"
+}
+
+# use the first argument as service name and the second as fault description, if supplied
+[ -n "$1" ] && SERVICE_NAME="$1"
+[ -n "$2" ] && SERVICE_FAULT="$2"
+
+# use monit enviroment variables if no arguments supplied
+[ -z "$SERVICE_NAME" ] && SERVICE_NAME="$MONIT_SERVICE"
+[ -z "$SERVICE_FAULT" ] && SERVICE_FAULT="$MONIT_DESCRIPTION"
+
+if [ -z "$SERVICE_NAME" -o -z "$SERVICE_FAULT" ]; then
+	$LOG_ERR "Invalid arguments to script: supply service and fault as arguments or set monit environment variables."
+	exit 1
+fi
+
+$LOG_ERR "$SERVICE_NAME: $SERVICE_FAULT"
+send_start_stop_fault "$SERVICE_NAME" "$SERVICE_FAULT"

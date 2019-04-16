@@ -1,0 +1,3 @@
+/usr/bin/monit -p /var/run/monit.pid -s /var/log/monit.state
+
+monit status		: muestra la información sobre los procesos monitorizados
