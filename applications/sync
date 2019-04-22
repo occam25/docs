@@ -1,0 +1,14 @@
+
+
+sync	: escribir a disco todo lo que está pendiente
+
+Para ver progreso: watch grep -e Dirty: -e Writeback: /proc/meminfo
+
+
+
+Looking at /proc/meminfo will show the "Dirty" number shrinking over time as all the data spools out; some of it may spill into "Writeback" as well. That will be a summary against all devices, but in the cases where one device on the system is much slower than the rest you'll usually end up where everything in that queue is related to it. You'll probably find the Dirty number large when you start and the sync finished about the same time it approaches 0. Try this to get an interactive display:
+
+watch grep -e Dirty: -e Writeback: /proc/meminfo
+
+With regular disks I can normally ignore Writeback, but I'm not sure if it's involved more often in the USB transfer path. If it just bounces up and down without a clear trend to it, you can probably just look at the Dirty number.
+
