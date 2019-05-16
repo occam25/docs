@@ -1,28 +1,3 @@
-/*
-https://github.com/akheron/jansson
-sudo apt-get install libjansson-dev
-gcc -o test test.c -ljansson
-
-json:
-{
- "stream_type":"SUB_STREAM",
- "end_time":123456789,
- "devices":[
-	{
-	"device":"uuid_1",
-	"property":"prop1"
-	},
-	{
-	"device":"uuid_2",
-	"property":"prop2"
-	},
-	{
-	"device":"uuid_3",
-	"property":"prop3"
-	}
- ]
-}
-*/
 #include <stdio.h>
 #include <string.h>
 #include <jansson.h>
@@ -36,14 +11,13 @@ int main(void)
 	int i; 
 
 	json_t *root = json_object();
-	json_t *dev_prop = json_object();
 	json_t *dev_prop_pairs = json_array();
 
 	for(i=0; i < 3; i++){
-		json_t *tmp = json_object();
-		json_object_set_new(tmp, "device", json_string(devices[i]));
-		json_object_set_new(tmp, "property", json_string(properties[i]));
-		json_array_append_new(dev_prop_pairs, tmp);
+		json_t *dev_prop = json_object();
+		json_object_set_new(dev_prop, "device", json_string(devices[i]));
+		json_object_set_new(dev_prop, "property", json_string(properties[i]));
+		json_array_append_new(dev_prop_pairs, dev_prop);
 	}
 
 	json_object_set_new(root, "stream_type", json_string("SUB_STREAM"));
