@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <string.h>
 #include <jansson.h>
@@ -10,6 +11,7 @@ int main(void)
 	const char *properties[] = {"prop1", "prop2", "prop3"};
 	int i; 
 
+	// Create json string
 	json_t *root = json_object();
 	json_t *dev_prop_pairs = json_array();
 
@@ -29,6 +31,30 @@ int main(void)
 
 	puts(s);
 
+	json_decref(root);
+	free(s);
+	// Parse json string
+	json_error_t error;
+
+	if(!asprintf(&s, "{\"device\":\"uuid1\",\"property\":\"property1\",\"value\":\"23\",\"timestamp\":123456789}")){
+		fprintf(stderr, "Failed to create json string\n");	
+		return 1;
+	}
+
+	root = json_loads(s, 0, &error);
+	if(!root){
+		fprintf(stderr, "Failed to load json string: %s\n", error.text);
+		free(s);
+		return 1;	
+	}
+
+	const char *device, *property, *value;
+	int ts;
+	json_unpack(root, "{s:s, s:s, s:s, s:i}", "device", &device, "property", &property, "value", &value, "timestamp", &ts);
+
+	printf("device: %s\nproperty: %s\nvalue: %s\ntimestamp: %d\n", device, property, value, ts);
+
+clean_up:
 	json_decref(root);
 	free(s);
 
