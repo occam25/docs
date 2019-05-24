@@ -1,0 +1,2 @@
+
+rpm2cpio /path/to/rpm | cpio -id
