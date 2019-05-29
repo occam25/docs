@@ -1,0 +1,6 @@
+# Link to a local dynamic library called myfile.so
+gcc -L. -l:myfile.so
+
+
+# View dynamic libraries of a binary
+ldd mybinary
