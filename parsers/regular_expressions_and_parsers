@@ -25,3 +25,6 @@ grep ^[^#] /etc/hostapd.conf    : Print lines not starting with #
 
 # Select lines that NOT contain any of these words (ont, two, three)
 ^(?!.*(one|two|three)).*$
+
+# Print word between two patterns: example: extract revision from manifest line
+echo '<project name="meta-dummy-bsp" path="yocto/meta-dummy-bsp" remote="dummy" revision="release/2019.3" upstream="master"/>' | sed 's/.*revision="\([^"]*\)" .*/\1/'
