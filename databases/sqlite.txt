@@ -5,3 +5,6 @@ pragma table_info(table_name); // show table information
 
 # Filtrar por fecha
 select * from log_measurements where Timestamp >= Datetime('2018-12-18 08:00:00');
+
+# Borrar fila
+DELETE FROM table_name WHERE condition;
