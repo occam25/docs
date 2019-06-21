@@ -1,0 +1,4 @@
+# Check if a variable is not empty
+if [ ! -z $1 ]; then
+  echo "not empty"
+fi
