@@ -1,0 +1,137 @@
+OPERATORS
+
+c		: change
+cw		: deletes from the cursor to the end of the word and goes into insert mode
+ciw		: deletes the whole workd where the cursor is and goes into insert mode
+d		: delete
+y		: yank into register
+~		: swap case
+gu		: make lowercase
+gu		: make uppercase
+!		: filter to external process
+<		: shift left
+>		: shift right
+=		: indent
+
+TEXT OBJECTS
+
+aw		: a word ("casa ")
+iw		: inner word ("casa")
+aW		: a WORD
+iw		: inner WORD
+ap		: a paragraph
+ip		: inner paragraph
+ab		: a bracket
+ib		: inner bracket
+at		: a tag block
+it		: inner tag block
+
+MOTIONS
+
+%				: go to first matching parentesis/bracket
+[count]+		: down to first non-blank char of line (current + count)
+[count]$		: down to end of line (current + count)
+[count]f/F{char}: to next/prev occurence of {char}
+[count]t/T{char}: to before next/prev occurence of {char}
+[count]]m		: go to beginning of next method
+[count]w/W		: go a word/WORD to the right
+[count]b/B		: go a word/WORD to the left
+[count]e/E		: go to end of word/WORD right 
+H				: go to high 
+M				: go to medium
+L				: go to low
+zt				: put current cursor position to top
+zz				: put current cursor position to middle
+zb				: put current cursor position to bottom
+Ctrl-B			: move up one screen (backwards)
+Ctrl-F			: move down one screen (forward)
+Ctrl-U			: move up half screen
+Ctrl-D			: move down half screen
+Ctrl-E			: scroll down
+Ctrl-Y			: scroll up 
+
+COMMANDS
+
+:windo difft  	: abre un diff con las dos pantallas abiertas (una vez editanto el diferente: Ctrl-X Ctrl-L  autocompleta)
+:windo diffoff	: cierra el diff
+:e!				: vuelve a cargar el fichero descartando cambios
+:e[dit] [++opt] [+cmd] {file}
+:fin[d][!] [++opt] [+cmd] {file}
+gf				: go to file (opens the file with the filename that is under the cursor)
+Ctrl-^			: Switch buffers
+
+searching:
+/{patt}[/]<CR>	: search for {patt}
+/<CR>			: search for last used pattern
+?{patt}[?]<CR>	: search back for {patt}
+?<CR>			: search back for last pattern
+[count]n 		: repeat last search [count] times
+[count]N		: same as above, opposite direction
+*				: search forward for word under cursor
+#				: same as above, opposite direction
+gd				: go to local declaration
+:set hls!		: toggle search highlighting
+:find {file}	: search for {file} and open it 
+
+MARKS
+m{a-zA-Z}		: sets a custom mark
+'{mark}			: jumps to {mark}
+:marks			: shows all the current marks that are being used
+'.				: special mark to jump to the last change
+
+TAGS
+Ctrl-]			: jump to the first keyword definition found
+gCtrl-]			: show all the places where the tag appears (jump to any of them by selecting the number)
+Ctrl-t			: pop from the tag stack
+:tags			: see all tags 
+:!ctags -R --languages=c --exclude="file_I_want_to_exclude"		: create tag
+
+
+JUMP LIST / CHANGE LIST
+
+Ctrl-O / Ctrl-I		: Cycle through :jumps
+g; / g,				: Cycle through :changes
+
+BUFFERS
+
+:bn				: go to next buffer
+:b {filename}	: go to buffer {filename}
+:bd				: delete current buffer
+:buffers		: print out all buffers
+:bufdo {cmd}	: execute {cmd} for all buffers
+:n 				: go to next file (based on arg list)
+:arga {filename}: add {filename} to arg list
+:argl {files}	: make a local arg copy via {files}
+:args			: print out all arguments
+:sall 			: split all the arguments in horizontal windows 
+:vim /TODO/ ##  : search TODO in all the arguments in our list
+:cn				: jumpt to next match in the search
+:cdo s/TODO/DONE/g : do change TODO with DONE in every line of the argument list files
+
+TERMINAL BUFFERS
+:bo sp new_buffer	: creates a new buffer new_buffer spliting horizontally
+
+WINDOWS
+
+<Ctrl-w> s		: split window
+<Ctrl-w> v		: split window vertically
+<Ctrl-w> q		: close window
+<Ctrl-w> w		: alternate window
+<Ctrl-w> r 		: rotate windows
+<Ctrl-w> o 		: make the current windows the only one
+:windo {cmd}	: execute {cmd} for all windows
+:sf {FILE}		: split window and :find {FILE}
+:vert sf {FILE}	: same as befor but using vertical split
+:vert {cmd}		: make any split {cmd} be vertical
+:20vs .			: split vertically with 20 width and open current directory on it
+
+
+TABS
+
+gt				: go to next tab
+gT				: go to prev tab
+:tabc			: close tab 
+:tabe			: open tab 
+:tabo			: close all other tabs
+:tabf {file}	: find {file} and open in a tab
+
