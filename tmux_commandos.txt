@@ -1,0 +1,12 @@
+
+tmux ls				: lista sesiones 
+tmux new -s coco		: crea nueva sesion llamada coco
+Ctrl+b + d			: Deattach
+tmux a -t coco			: Attach a la sesion coco
+tmux a #			: Attach a la ultima sesion creada
+
+Ctrl+b + "			: Divide pantalla horizontalmente
+Ctrl+b + %			: Divide pantalla verticalmente
+Ctrl+b + [			: Scroll mode
+Ctrl+b + flecha			: Cambia de ventana
+Ctrl+b + flecha (a la vez)	: Resize ventana

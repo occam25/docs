@@ -12,3 +12,5 @@ DELETE FROM table_name WHERE condition;
 # Buscar string en todas las tablas de 5g.db. Imprimirá las tablas que contienen el string
 for X in $(sqlite3 5g.db .tables) ; do sqlite3 5g.db "SELECT * FROM $X;" | grep >/dev/null '44b2ce1e-3f77-43fa-96d6-ca1ba6f98848' && echo $X; done
 
+# mostrar los primeros 10 resultados
+select * from log_measurements limit 10;
