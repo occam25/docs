@@ -135,3 +135,6 @@ gT				: go to prev tab
 :tabo			: close all other tabs
 :tabf {file}	: find {file} and open in a tab
 
+
+IGNORE CASE IN SEARCH
+/\c{pattern}
