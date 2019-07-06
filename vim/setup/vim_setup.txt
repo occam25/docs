@@ -13,3 +13,26 @@ git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 Launch VIM and type ":PluginInstall"
 
 python ~/.vim/bundle/YouCompleteMe/install.py
+
+
+NOTAS:
+He tenido que instalarme vim desde los fuentes para tener una version más moderna:
+https://github.com/vim/vim.git
+
+El configure lo he hecho como:
+./configure --with-features=huge \
+            --enable-multibyte
+            --enable-rubyinterp=yes \
+            --enable-pythoninterp=yes \
+            --with-python-config-dir=/usr/lib/python2.7/config-x86_64-linux-gnu \
+            --enable-python3interp=yes \
+            --with-python3-config-dir=/usr/lib/python3.5/config-3.5m-x86_64-linux-gnu \
+            --enable-perlinterp=yes \
+            --enable-luainterp=yes \
+            --enable-gui=gtk2 \
+            --enable-cscope \
+            --prefix=/usr/local
+
+Mejor instalar python3.5 ya que el YouCompleteMe no va con la 2.7
+En ubuntus viejos he tenido que instalarme una versión más moderna de CMake (https://github.com/Kitware/CMake.git) porque no encontraba las librerías de python3.5
+
