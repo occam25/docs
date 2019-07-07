@@ -56,6 +56,7 @@ endif
 set tabstop=4
 colorscheme evening
 set number
+set relativenumber
 set hls
 set guifont=*
 set shiftwidth=4
