@@ -138,3 +138,6 @@ gT				: go to prev tab
 
 IGNORE CASE IN SEARCH
 /\c{pattern}
+
+TOGGLE BETWEEN BUFFERS
+<c-6>
