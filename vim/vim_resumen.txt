@@ -141,3 +141,11 @@ IGNORE CASE IN SEARCH
 
 TOGGLE BETWEEN BUFFERS
 <c-6>
+
+CONTROL KEY IN INSERT MODE
+<C-a>               : Re-enter the contents entered in the previous insert mode
+<C-i>               : Insert tab
+<C-r>=10*10<Enter>  : Insert calculation result of 10*10
+<C-w>               : Delete from cursor position to the begining of the previous word
+<C-u>               : Delete from the beggining of the line to the position before the cursos position
+<C-h>               : Backspace
