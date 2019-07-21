@@ -112,12 +112,23 @@ let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standar
 nmap <F8> :TagbarToggle<CR>
 
 " setup for indent line
+" " Mis settings
+set hidden
 let g:indentLine_char = '│'
 set tags=./tags,tags;$HOME
 "source ~/cscope_maps.vim
 
+" Mis settings
+set hidden
+" Hacer que aparezca un lista de matchings en la parte de abajo (ej: b <TAB> muestra todos los buffers disponibles)
+set wildchar=<Tab> wildmenu wildmode=full
+" Para mostrar la lista de buffers y poser recorrerla con el tabulador:
+set wildcharm=<C-Z>
+nnoremap <F10> :b <C-Z>
 " Mis remaps
 nnoremap <silent> [b :bprevious<CR>
 nnoremap <silent> ]b :bnext<CR>
 nnoremap <silent> [B :bfirst<CR>
 nnoremap <silent> ]B :blast<CR>
+nnoremap <F2> :buffers<CR>:buffer<Space>
+
