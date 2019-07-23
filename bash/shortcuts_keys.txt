@@ -16,7 +16,7 @@ CTRL key shortcuts
 1. CTRL+A – Quickly move to the beginning of line. <--------------------------
 2. CTRL+B – To move backward one character. <--------------------------
 3. CTRL+C – Stop the currently running command
-4. CTRL+D – Delete one character backward.
+4. CTRL+D – Delete one character backward, same as Supr. <--------------------------
 5. CTRL+E – Move to the end of line  <--------------------------
 6. CTRL+F – Move forward one character  <--------------------------
 7. CTRL+G – Leave the history searching mode without running the command.
