@@ -1,0 +1,4 @@
+
+Super+Space : change input keyboard
+Ctrl + Alt + Arrow : change workspace
+Ctrl + Shift + Alt + Arrow : move current window to workspace
