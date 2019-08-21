@@ -1,0 +1,2 @@
+# Just highlight the pattern, show everything
+grep --color 'pattern\|$' file
