@@ -1,2 +1,8 @@
 # Just highlight the pattern, show everything
 grep --color 'pattern\|$' file
+
+# Show 4 lines before match
+grep -B 4 'keyword' file
+
+# Show 4 lines after match
+grep -A 4 'keyword' file
