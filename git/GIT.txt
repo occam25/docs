@@ -133,6 +133,17 @@ git rev-list -1 --before="2019-05-20 12:36:14" master --format=medium
 
 
 
+# Si meto ficheros ya trackeados en .gitignore y no me los pilla:
+Even if you haven't tracked the files so far, Git seems to be able to "know" about them even after you add them to .gitignore.
+NOTE: First commit your current changes, or you will lose them.
+Then run the following commands from the top folder of your Git repository:
+
+git rm -r --cached .
+git add .
+git commit -m "fixed untracked files"
+
+
+
 
 
 
