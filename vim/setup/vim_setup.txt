@@ -21,7 +21,7 @@ https://github.com/vim/vim.git
 
 El configure lo he hecho como:
 ./configure --with-features=huge \
-            --enable-multibyte
+            --enable-multibyte \
             --enable-rubyinterp=yes \
             --enable-pythoninterp=yes \
             --with-python-config-dir=/usr/lib/python2.7/config-x86_64-linux-gnu \
