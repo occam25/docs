@@ -34,5 +34,5 @@ El configure lo he hecho como:
             --prefix=/usr/local
 
 Mejor instalar python3.5 ya que el YouCompleteMe no va con la 2.7
-En ubuntus viejos he tenido que instalarme una versión más moderna de CMake (https://github.com/Kitware/CMake.git) porque no encontraba las librerías de python3.5
+En ubuntus viejos he tenido que instalarme una versión más moderna de CMake (https://github.com/Kitware/CMake.git -> ./bootstrap && make && sudo make install) porque no encontraba las librerías de python3.5
 
