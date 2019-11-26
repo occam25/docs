@@ -11,3 +11,9 @@ Solucion: sudo apt-get install ppp
 sudo -E add-apt-repository ppa:openjdk-r/ppa 
 sudo apt-get update
 sudo apt-get install openjdk-8-jdk
+
+5. En virtualbox el ubuntu 14.04 arranca sin escritorio:
+sudo apt-get update
+sudo apt-get install --reinstall ubuntu-desktop
+sudo apt-get install --reinstall unity
+sudo reboot
