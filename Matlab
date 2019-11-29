@@ -1,0 +1,2 @@
+
+ginput :  Abre una ventana gráfica, pones el ratón donde quieras, das a enter y te devuelve las coordenadas
