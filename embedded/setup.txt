@@ -1,0 +1,41 @@
+
+INSTALAR SERVIDOR TFTP
+
+sudo apt-get install tftpd-hpa
+
+Fichero de configuracion: /etc/default/tftpd-hpa
+
+Por defecto usa el directorio /var/lib/tftpboot/
+
+Cambiar permisos para hacerlo accesible a todos los usuarios:
+
+sudo chmod 1777 /var/lib/tftpboot/
+
+En esa carpeta copiaremos el device tree blob (.dtb) y el kernel en formato zImage.
+
+
+INSTALAR SERVIDOR NFS
+
+sudo apt-get install nfs-kernel-server
+
+Usaremos el directorio /nfsroot  (sudo mkdir -m 777 /nfsroot), donde se descomprime el root filesystem del target generado con Yocto (o el que sea que queramos usar)
+
+sudo tar xf ~/fsl-release-bsp/build_imx7d/tmp/deploy/images/imx7dsabresd/fsl-image-validation-imx-imx7dsabresd.tar.bz2
+
+Se configura el servidor para que exporte ese directorio añadiendo la siguiente linea en el fichero /etc/exports:
+
+/nfsroot/   *(rw,no_root_squash,async,no_subtree_check)
+
+Se reinicia el servidor para que los cambios tengan efecto:
+
+sudo service nfs-kernel-server restart
+
+Cuando se compilen los modulos se instalaran en lib/modules/<kernel version> desde root. Habra que indicarle que use nuestro directorio como base de la instalacion:
+
+- Cargamos el entorno para compilacion cruzada:
+    source /opt/fsl-imx-x11/4.9.11-1.0.0/environment-setup-cortexa7hf-neon-poky-linux-gnueabi
+
+- Instalamos los modulos en el root filesystem del target:
+    sudo make ARCH=arm INSTALL_MOD_PATH=/nfsroot/ modules_install
+
+
