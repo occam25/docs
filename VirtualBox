@@ -1,2 +1,4 @@
 # Resize existing HD
 VBoxManage modifyhd <Ruta Archivo VDI> --resize <Tamaño en MB>
+
+(After that you have to modify the partition size in the guest OS)
