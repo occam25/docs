@@ -1,0 +1,2 @@
+# Resize existing HD
+VBoxManage modifyhd <Ruta Archivo VDI> --resize <Tamaño en MB>
