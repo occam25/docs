@@ -111,6 +111,7 @@ export LM_LICENSE_FILE=/home/javi/flexlm/license.dat
 
 
 # function to set terminal title
+# gnome:
 function set-title(){
 	if [[ -z "$ORIG" ]]; then
 		ORIG="$PS1"
@@ -118,6 +119,11 @@ function set-title(){
 			TITLE="\[\e]2;$*\a\]"
 			PS1="${ORIG}${TITLE}"
 }
+# KDE (konsole):
+function settitle(){
+    echo -ne "\033]30;$*\007"
+}
+alias sett='settitle'
 
 # Alias to source the genericpc environment (Used to build the tests)
 function teste(){
