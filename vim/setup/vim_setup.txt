@@ -1,4 +1,4 @@
-sudo apt install vim
+sudo apt install vim   # Para tener clipboard instalar vim-gnome o vim-kde !!
 sudo apt install git
 sudo apt-get -y install cmake
 sudo apt install python3-dev
