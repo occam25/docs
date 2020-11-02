@@ -34,6 +34,11 @@ from libqtile.utils import guess_terminal
 mod = "mod4"
 terminal = guess_terminal()
 
+# keyboard next layout
+@lazy.function
+def z_next_keyboard(qtile):
+    keyboard_widget.cmd_next_keyboard()
+
 keys = [
     # Switch between windows
     Key([mod], "h", lazy.layout.left(), desc="Move focus to left"),
@@ -42,6 +47,8 @@ keys = [
     Key([mod], "k", lazy.layout.up(), desc="Move focus up"),
     Key([mod], "space", lazy.layout.next(),
         desc="Move window focus to other window"),
+
+    Key([mod, "shift"], "space", z_next_keyboard, desc="Set next keyboard layout"),
 
     # Move windows between left/right columns or move up/down in current stack.
     # Moving out of range in Columns layout will create new column.
@@ -74,13 +81,13 @@ keys = [
 
     # Toggle between different layouts as defined below
     Key([mod], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
-    Key([mod], "w", lazy.window.kill(), desc="Kill focused window"),
+    Key([mod], "d", lazy.window.kill(), desc="Kill focused window"),
 
     Key([mod, "control"], "r", lazy.restart(), desc="Restart Qtile"),
     Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
     Key([mod], "r", lazy.spawncmd(),
         desc="Spawn a command using a prompt widget"),
-    Key([mod], 'd', lazy.run_extension(extension.DmenuRun(
+    Key([mod], 'm', lazy.run_extension(extension.DmenuRun(
         dmenu_prompt=">",
         dmenu_font="Andika-8",
         background="#15181a",
@@ -106,7 +113,7 @@ keys = [
         desc='Move focus to prev monitor'),
 ]
 
-groups = [Group(i) for i in "123456789"]
+groups = [Group(i) for i in "12345"]
 
 for i in groups:
     keys.extend([
@@ -152,8 +159,12 @@ widget_defaults = dict(
 )
 extension_defaults = widget_defaults.copy()
 
+keyboard_widget=widget.KeyboardLayout(configured_keyboards=['gb','es'])
+
 screens = [
     Screen(
+        wallpaper='/home/javi/Pictures/wallpapers/retro_game.jpg',
+        wallpaper_mode='fill',
         bottom=bar.Bar(
             [
                 widget.CurrentLayout(),
@@ -166,8 +177,10 @@ screens = [
                     },
                     name_transform=lambda name: name.upper(),
                 ),
-                widget.TextBox("default config", name="default"),
+                #widget.TextBox("default config", name="default"),
                 widget.TextBox("Press &lt;M-r&gt; to spawn", foreground="#d75f5f"),
+                #widget.KeyboardLayout(configured_keyboards=['gb','es']),
+                keyboard_widget,
                 widget.Systray(),
                 widget.Volume(),
                 #widget.Net(interface='eno1'),
@@ -190,10 +203,10 @@ screens = [
                     },
                     name_transform=lambda name: name.upper(),
                 ),
-                widget.TextBox("default config", name="default"),
-                widget.TextBox("Press &lt;M-r&gt; to spawn", foreground="#d75f5f"),
+                #widget.TextBox("default config", name="default"),
+                #widget.TextBox("Press &lt;M-r&gt; to spawn", foreground="#d75f5f"),
                 widget.Systray(),
-                widget.Clock(format='%Y-%m-%d %a %I:%M %p'),
+                widget.Clock(format='%Y-%m-%d %a %H:%M'),
                 widget.QuickExit(),
             ],
             24,
