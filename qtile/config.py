@@ -24,8 +24,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import os
+import subprocess
 from typing import List  # noqa: F401
-
 from libqtile import bar, layout, widget, extension
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
@@ -33,11 +34,18 @@ from libqtile.utils import guess_terminal
 
 mod = "mod4"
 terminal = guess_terminal()
+browser = 'google-chrome'
+files = 'dolphin'
 
 # keyboard next layout
 @lazy.function
 def z_next_keyboard(qtile):
     keyboard_widget.cmd_next_keyboard()
+
+mute_command='amixer -q -D pulse set Master toggle'.split()
+volume_up_command='amixer -q -D pulse set Master 2%+'.split()
+volume_down_command='amixer -q -D pulse set Master 2%-'.split()
+get_volume_command='amixer -D pulse get Master'.split()
 
 keys = [
     # Switch between windows
@@ -49,6 +57,10 @@ keys = [
         desc="Move window focus to other window"),
 
     Key([mod, "shift"], "space", z_next_keyboard, desc="Set next keyboard layout"),
+
+    Key([], "XF86AudioMute", lazy.spawn(mute_command), desc="Mute sound"),
+    Key([], "XF86AudioLowerVolume", lazy.spawn(volume_down_command), desc="Volume down"),
+    Key([], "XF86AudioRaiseVolume", lazy.spawn(volume_up_command), desc="Volume up"),
 
     # Move windows between left/right columns or move up/down in current stack.
     # Moving out of range in Columns layout will create new column.
@@ -111,6 +123,11 @@ keys = [
     Key([mod], "comma",
         lazy.prev_screen(),
         desc='Move focus to prev monitor'),
+
+    # Apps
+
+    Key([mod], "b",lazy.spawn(browser)),
+    Key([mod], "f",lazy.spawn(files)),
 ]
 
 groups = [Group(i) for i in "12345"]
@@ -160,15 +177,17 @@ widget_defaults = dict(
 extension_defaults = widget_defaults.copy()
 
 keyboard_widget=widget.KeyboardLayout(configured_keyboards=['gb','es'])
+volume_widget=widget.Volume(mute_command=mute_command, volume_up_command=volume_up_command,volume_down_command=volume_down_command,get_volume_command=get_volume_command)
 
 screens = [
     Screen(
         wallpaper='/home/javi/Pictures/wallpapers/retro_game.jpg',
         wallpaper_mode='fill',
-        bottom=bar.Bar(
+        top=bar.Bar(
             [
                 widget.CurrentLayout(),
                 widget.GroupBox(),
+                widget.CurrentScreen(active_text='ACTIVE',inactive_text='INACTIVE'),
                 widget.Prompt(),
                 widget.WindowName(),
                 widget.Chord(
@@ -177,12 +196,20 @@ screens = [
                     },
                     name_transform=lambda name: name.upper(),
                 ),
+                widget.CheckUpdates(distro='Ubuntu',update_interval=3600,execute=terminal + ' -e "/home/javi/.config/qtile/bin/sysupdate.sh"',colour_have_updates = 'ff0000'), #(Added "/usr/bin/aptitude update &" in /etc/cron.daily/aptitude"
+                widget.TextBox("Net"),
+                widget.NetGraph(interface='auto'),
+                widget.TextBox("Mem"),
+                widget.MemoryGraph(graph_color='27DA99'),
+                widget.TextBox("CPU"),
+                widget.CPUGraph(graph_color='A563EB'),
+                widget.ThermalSensor(),
                 #widget.TextBox("default config", name="default"),
-                widget.TextBox("Press &lt;M-r&gt; to spawn", foreground="#d75f5f"),
+                #widget.TextBox("Press &lt;M-r&gt; to spawn", foreground="#d75f5f"),
                 #widget.KeyboardLayout(configured_keyboards=['gb','es']),
                 keyboard_widget,
+                volume_widget,
                 widget.Systray(),
-                widget.Volume(),
                 #widget.Net(interface='eno1'),
                 widget.Clock(format='%Y-%m-%d %a %H:%M'),
                 widget.QuickExit(),
@@ -191,10 +218,13 @@ screens = [
         ),
     ),
     Screen(
-        bottom=bar.Bar(
+        wallpaper='/home/javi/Pictures/wallpapers/retro_game.jpg',
+        wallpaper_mode='fill',
+        top=bar.Bar(
             [
                 widget.CurrentLayout(),
                 widget.GroupBox(),
+                widget.CurrentScreen(active_text='ACTIVE',inactive_text='INACTIVE'),
                 widget.Prompt(),
                 widget.WindowName(),
                 widget.Chord(
@@ -254,6 +284,11 @@ floating_layout = layout.Floating(float_rules=[
 ])
 auto_fullscreen = True
 focus_on_window_activation = "smart"
+
+#@hook.subscribe.startup_once
+#def start_once():
+#    home = os.path.expanduser('~')
+#    subprocess.call([home + '/.config/qtile/autostart.sh'])
 
 # XXX: Gasp! We're lying here. In fact, nobody really uses or cares about this
 # string besides java UI toolkits; you can see several discussions on the
