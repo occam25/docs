@@ -1,3 +1,7 @@
 
 # Mostrar 19 columnas en formato de 32 bits
 hexdump -v -e '19/4 "%08x " "\n"' user_app.bin
+
+# mejor
+hexdump -v  -e '"%08.8_ax  "' -e' 4/1 "%02x " "  " 4/1 "%02x " "  "  4/1 "%02x " "  " 4/1 "%02x "  ' -e '" |" 16/1 "%_p" "|\n"' file
+
