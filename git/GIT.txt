@@ -150,7 +150,17 @@ git add .
 git commit -m "fixed untracked files"
 
 
+###### This pull request has conflicts. ######
 
+You must resolve the conflicts by manually merging this branch into master. This will merge the pull request remotely.
+
+Step 1: Checkout the target branch and merge in the changes from the source branch. Resolve conflicts.
+    git checkout master
+    git pull origin ISC-604-update-ureader-device-id-parameter-if-wrong
+Step 2: After the merge conflicts are resolved, stage the changes accordingly, commit the changes and push.
+    git commit
+    git push origin HEAD
+Step 3: The pull request will be updated and marked as merged.
 
 
 
