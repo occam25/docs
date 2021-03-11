@@ -7,6 +7,12 @@ git tag -n
 git tag -n -l <tag_name>
 git cat-file tag <tag_name>   : muestra info del tag
 
+# cambiar varios mensajes de commits (por ejemplo, el cuarto y el quinto):
+1) git rebase -i HEAD~5	: muestra los ultimos 5 commits en el editor
+2) Cambiar la palabra "pick" del principio de linea a "reword" para todo commit que quieras cambiar su mensaje
+3) Guardas y cierras. Se abrira un editor por cada uno de los commits a modificar (uno tras otro). 
+4) Modificas el mensaje, guardas y cierras, en cada uno de los editores abiertos
+5) git push --force branch-name  : al acabar actualizas remote (OJO! el force rompera las versiones locales de los que se hayan descargado la rama! NUNCA hacerlo en master!!!)
 
 git stash
 git stash pop
