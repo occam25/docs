@@ -2,6 +2,8 @@
 Select lines NOT containing string: dczwave
 ^((?!dczwave).)*$
 
+^(?:(?!case ).)*$
+
 Select blank lines:
 ^(?:[\t ]*(?:\r?\n|\r))+
 
