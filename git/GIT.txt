@@ -2,6 +2,9 @@
 git log -p -- <file>
 git log --follow -p -- <file> : lo mismo pero te dice si el fichero fue renombrado
 
+# Eliminar cambios realizados a un fichero:
+git checkout HEAD -- my-file.txt     (-- significa que todo lo que venga a continuacion lo tome como nombre de fichero)
+
 # Listar tags (con -n muestra la primera linea del tag)
 git tag -n
 git tag -n -l <tag_name>
