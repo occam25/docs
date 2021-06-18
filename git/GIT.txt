@@ -94,6 +94,13 @@ git commit --amend   -> igual que antes, cambia el hash y el history -> SOLO HAC
 
 git log --stat  -> muestra los ficheros cambiados en cada commit!!!! <--------------------------
 
+# Clean
+Step 1 is to show what will be deleted by using the -n option:
+# Print out the list of files and directories which will be removed (dry run)
+git clean -n -d
+Clean Step - beware: this will delete files:
+# Delete the files from the repository
+git clean -f
 
 # git cherry-pick -> coge un commit y lo aplica a la branch actual. EJ:
 1. en master haces git log y copias los 6 o 7 primeros caracteres del commit que quieres meter en la otra branch
