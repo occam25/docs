@@ -193,4 +193,15 @@ Step 2: After the merge conflicts are resolved, stage the changes accordingly, c
 Step 3: The pull request will be updated and marked as merged.
 
 
+####### Change branch
+Rename a branch while pointed to any branch, do:
+git branch -m <oldname> <newname>
 
+Rename the current branch, you can do:
+git branch -m <newname>
+
+Push the local branch and reset the upstream branch:
+git push origin -u <newname>
+
+Delete the remote branch:
+git push origin --delete <oldname>
