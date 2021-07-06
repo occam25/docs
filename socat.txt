@@ -1,0 +1,8 @@
+Transport serial port over network
+The other end may be provided by ser2net
+
+socat -d -d pty,link=/dev/ttyUSB99,echo=0,perm=0777 TCP4-CONNECT:192.168.0.254:5000
+
+
+Emulate two connected serial ports
+socat -d -d pty,link=/dev/ttyUSB98,echo=0,perm=0777 pty,link=/dev/ttyUSB99,echo=0,perm=0777
