@@ -6,3 +6,34 @@ socat -d -d pty,link=/dev/ttyUSB99,echo=0,perm=0777 TCP4-CONNECT:192.168.0.254:5
 
 Emulate two connected serial ports
 socat -d -d pty,link=/dev/ttyUSB98,echo=0,perm=0777 pty,link=/dev/ttyUSB99,echo=0,perm=0777
+
+
+To create a pair of VSP’s
+socat -d -d pty,raw,echo=0 pty,raw,echo=0
+and that’s it! As long as the socat is running, you have a pair of VSP’s open (their names are printed by socat on initialization). See socat man page for more details on what the above command does.
+
+Connecting executable and VSP
+socat -d -d pty,raw,echo=0 "exec:myprog ...,pty,raw,echo=0"
+where the executable myprog will be connected with the VSP through stdio.
+
+Virtual network interfaces
+In a similar fashion, you can create pairs of virtual network interfaces – tun/tap devices (again, this pair exists as long as the master process – socat – is alive):
+
+sudo socat -d -d tun:10.0.0.1/8 tun:192.168.0.1/24
+
+
+
+Generate TUN devices with socat
+In this section two instances of socat are used to generate TUN devices on different hosts and connect the "wire" sides, providing a simple virtual network.
+We distinguish server and client only with respect to the connection between the two socat instances; the TUN interfaces both have the same quality.
+
+TUN Server
+sudo socat -d -d UDP-LISTEN:11443,reuseaddr TUN:192.168.255.1/24,up
+After starting this command, socat will wait for a connection and then create a TUN pseudo network device with address 192.168.255.1; the bit number specifies the mask of the network that is pretended to be connected on this interface.
+
+TUN Client
+sudo socat UDP:127.0.0.1:11443 TUN:192.168.255.2/24,up
+This command should establish a connection to the server and create the TUN device on the client.
+
+Seeing it work
+After successful connection both TUN interfaces should be active and transfer date between each other using the UDP connection. Try this by pinging 192.168.255.1 from the client and 192.168.255.2 from the server.
