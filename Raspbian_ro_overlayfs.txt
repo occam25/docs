@@ -1,0 +1,250 @@
+
+1. Add overlay module
+Edit /usr/share/initramfs-tools/hook-functions
+Around line 528 add overlay to the list of modules to be include in the default initramfs
+
+for arg in "$@" ; do
+        case "$arg" in
+        base)
+            modules="$modules ehci-pci ehci-orion ehci-hcd ohci-hcd ohci-pci uhci-hcd usbhid overlay"  <----- add overlay
+            modules="$modules xhci xhci-pci xhci-hcd"
+            modules="$modules btrfs ext2 ext3 ext4 ext4dev "
+            
+2. change directory to /usr/share/initramfs-tools/scripts and create a new boot script called overlay by copying the already existing local boot script
+# cd /usr/share/initramfs-tools/scripts
+# cp local overlay
+# cp -rp local-premount overlay-premount
+# cp -rp local-bottom overlay-bottom
+
+3. Edit the file overlay to include the commands to mount the overlay filesystem. The routine to change is local_mount_root() and the relevant changes look like:
+
+#   if [ "${readonly}" = "y" ]; then
+        roflag=-r
+#   else
+#       roflag=-w
+#   fi
+
+    # FIXME This has no error checking
+    modprobe ${FSTYPE}
+
+    checkfs ${ROOT} root
+
+    # FIXME This has no error checking
+    # Mount root
+    mkdir /upper /lower
+    if [ "${FSTYPE}" != "unknown" ]; then
+        mount ${roflag} -t ${FSTYPE} ${ROOTFLAGS} ${ROOT} /lower
+    else
+        mount ${roflag} ${ROOTFLAGS} ${ROOT} /lower
+    fi
+    modprobe overlay
+    mount -t tmpfs tmpfs /upper
+    mkdir /upper/data /upper/work
+    #mount -olowerdir=/lower,upperdir=/upper/data,workdir=/upper/work -t overlay overlay ${rootmnt} (esta o la de abajo???)
+    mount -t overlay \
+        -olowerdir=/lower,upperdir=/upper/data,workdir=/upper/work \
+        overlay ${rootmnt}
+        
+    
+
+Note that the if statement has been commented out so the root filesystem will always be mounted read only and a writable tmpfs is overlayed on top of the read-only root.
+
+4. It is now possible to create a suitable initramfs using the commands
+# update-initramfs -c -k $(uname -r)
+# cd /boot
+# mv initrd.img-$(uname -r) initrd7.img
+
+If you are running a different kernel, the above commands will have to be changed accordingly. For example, on a Pi B+ which uses an ARMv6 CPU the 7's will be missing from the above filenames.
+
+5. Enable the initramfs.
+If after making the following changes your Pi fails to boot, turn the power off, remove the sdcard and mount it in a working computer. Simply revert the changes to config.txt and cmdline.txt described below and your Pi should work normally as before. 
+
+To enable the initramfs edit /boot/config.txt and add the lines (these lines assume you are booting on a Pi 2B or 3B. For a Zero or B+ the 7's should be removed):
+kernel=kernel7.img
+initramfs initrd7.img
+
+Next edit /boot/cmdline.txt to add the option boot=overlay at the begining of the line:
+boot=overlay dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root=/dev/mmcblk0p2 rootfstype=ext4 elevator=deadline fsck.repair=yes rootwait quiet loglevel=3 consoleblank=0 plymouth.enable=0
+
+At this point Raspbian is configured with a read-only root and ready to reboot. Try rebooting.
+
+Note that running with boot=overlay means all writes to the root file system will be stored in RAM. This is intended for protecting sdcards running embedded applications that have modest memory usage patterns. While a full Raspian desktop will still boot, since RAM is scarce on the Pi, the use of web-browsers, Mathematica and office software may go badly. If available RAM becomes an issue, it would be possible to use similar techniques to put the writable overlay on a separate USB stick without impacting the reliability of the sdcard.
+
+
+
+
+
+########################## LO QUE ME HA FUNCIONADO:
+
+solve raspbian SD card corruption issues with read-only mounted root partition
+Raspbian, the default debian-based distribution that runs on most Raspberry PI's has one significant issue, when the Rpi is used as a headless system which will just be unplugged rather than shut down regularily: It runs ext4 as its root filesystem. Ext4 has a journal which can be easily corrupted when power is lost during a write operation and it is not particularly friendly to or optimized for flash devices.
+
+I have therefore written a small init-script which can be run before the actual init is launched, which will mount the root filesystem read-only and then mount a temporary filesystem residing in ram on top of it using overlayfs. with this setup, all applications can simply read and write to their directories within the root file system but all changes are simply going to the ram, nothing is written to the disk. This means, that there will be no write operations on the SD card anymore and therefore it should last much longer. Of course this also means, that all changes that are made between reboots are lost once the raspberry is either rebooted or the power is cut. In headless environments this is often the desired scenario, when the raspberry pi is simply there to fulfill a simple task and no data needs to be preserved.
+
+If on the other hand, data should be stored (say you want to build an appliance that logs data), you can simply creat an additional partition on the sd card or use an external usb stick or similar and mount this read-writeable as you would normally do through fstab. my script will only mess with the root partition, all ohter mounts are not affected by it.
+
+if you need a writeable partition, consider using f2fs on it, which is optimized for flash memory and should be more robust on a power loss than ext4.
+
+Installation
+download the script below and copy it to /sbin/overlayRoot.sh
+make it executable
+sudo chmod +x /sbin/overlayRoot.sh
+disable swap:
+sudo dphys-swapfile swapoff
+sudo dphys-swapfile uninstall
+sudo update-rc.d dphys-swapfile remove
+after you have set up and configured your raspberry pi the way you want it, simply activate the overlayRoot script as alternate init script by adding this entry to the end of your cmdline.txt file in the boot partition of the raspbian sd card:
+init=/sbin/overlayRoot.sh
+then reboot
+
+to make changes, simply remove the entry above and reboot and your raspberry is writeable again. then re-enable and reboot for it to be readonly again.
+The Script
+overlayRoot.sh
+#!/bin/sh
+#  Read-only Root-FS for Raspian using overlayfs
+#  Version 1.1
+#
+#  Version History:
+#  1.0: initial release
+#  1.1: adopted new fstab style with PARTUUID. the script will now look for a /dev/xyz definiton first 
+#       (old raspbian), if that is not found, it will look for a partition with LABEL=rootfs, if that
+#       is not found it look for a PARTUUID string in fstab for / and convert that to a device name
+#       using the blkid command. 
+#
+#  Created 2017 by Pascal Suter @ DALCO AG, Switzerland to work on Raspian as custom init script
+#  (raspbian does not use an initramfs on boot)
+#
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see
+#    <http://www.gnu.org/licenses/>.
+#
+#
+#  Tested with Raspbian mini, 2018-10-09
+#
+#  This script will mount the root filesystem read-only and overlay it with a temporary tempfs 
+#  which is read-write mounted. This is done using the overlayFS which is part of the linux kernel 
+#  since version 3.18. 
+#  when this script is in use, all changes made to anywhere in the root filesystem mount will be lost 
+#  upon reboot of the system. The SD card will only be accessed as read-only drive, which significantly
+#  helps to prolong its life and prevent filesystem coruption in environments where the system is usually
+#  not shut down properly 
+#
+#  Install: 
+#  copy this script to /sbin/overlayRoot.sh, make it executable and add "init=/sbin/overlayRoot.sh" to the 
+#  cmdline.txt file in the raspbian image's boot partition. 
+#  I strongly recommend to disable swapping before using this. it will work with swap but that just does 
+#  not make sens as the swap file will be stored in the tempfs which again resides in the ram.
+#  run these commands on the booted raspberry pi BEFORE you set the init=/sbin/overlayRoot.sh boot option:
+#  sudo dphys-swapfile swapoff
+#  sudo dphys-swapfile uninstall
+#  sudo update-rc.d dphys-swapfile remove
+#
+#  To install software, run upgrades and do other changes to the raspberry setup, simply remove the init= 
+#  entry from the cmdline.txt file and reboot, make the changes, add the init= entry and reboot once more. 
+ 
+fail(){
+	echo -e "$1"
+	/bin/bash
+}
+ 
+# load module
+modprobe overlay
+if [ $? -ne 0 ]; then
+    fail "ERROR: missing overlay kernel module"
+fi
+# mount /proc
+mount -t proc proc /proc
+if [ $? -ne 0 ]; then
+    fail "ERROR: could not mount proc"
+fi
+# create a writable fs to then create our mountpoints 
+mount -t tmpfs inittemp /mnt
+if [ $? -ne 0 ]; then
+    fail "ERROR: could not create a temporary filesystem to mount the base filesystems for overlayfs"
+fi
+mkdir /mnt/lower
+mkdir /mnt/rw
+mount -t tmpfs root-rw /mnt/rw
+if [ $? -ne 0 ]; then
+    fail "ERROR: could not create tempfs for upper filesystem"
+fi
+mkdir /mnt/rw/upper
+mkdir /mnt/rw/work
+mkdir /mnt/newroot
+# mount root filesystem readonly 
+rootDev=`awk '$2 == "/" {print $1}' /etc/fstab`
+rootMountOpt=`awk '$2 == "/" {print $4}' /etc/fstab`
+rootFsType=`awk '$2 == "/" {print $3}' /etc/fstab`
+echo "check if we can locate the root device based on fstab"
+blkid $rootDev
+if [ $? -gt 0 ]; then
+    echo "no success, try if a filesystem with label 'rootfs' is avaialble"
+    rootDevFstab=$rootDev
+    rootDev=`blkid -L "rootfs"`
+    if [ $? -gt 0 ]; then
+        echo "no luck either, try to further parse fstab's root device definition"
+        echo "try if fstab contains a PARTUUID definition"
+        echo "$rootDevFstab" | grep 'PARTUUID=\(.*\)-\([0-9]\{2\}\)'
+        if [ $? -gt 0 ]; then 
+	    fail "could not find a root filesystem device in fstab. Make sure that fstab contains a device definition or a PARTUUID entry for / or that the root filesystem has a label 'rootfs' assigned to it"
+        fi
+        device=""
+        partition=""
+        eval `echo "$rootDevFstab" | sed -e 's/PARTUUID=\(.*\)-\([0-9]\{2\}\)/device=\1;partition=\2/'`
+        rootDev=`blkid -t "PTUUID=$device" | awk -F : '{print $1}'`p$(($partition))
+        blkid $rootDev
+        if [ $? -gt 0 ]; then
+	    fail "The PARTUUID entry in fstab could not be converted into a valid device name. Make sure that fstab contains a device definition or a PARTUUID entry for / or that the root filesystem has a label 'rootfs' assigned to it"
+        fi
+    fi
+fi
+mount -t ${rootFsType} -o ${rootMountOpt},ro ${rootDev} /mnt/lower
+if [ $? -ne 0 ]; then
+    fail "ERROR: could not ro-mount original root partition"
+fi
+mount -t overlay -o lowerdir=/mnt/lower,upperdir=/mnt/rw/upper,workdir=/mnt/rw/work overlayfs-root /mnt/newroot
+if [ $? -ne 0 ]; then
+    fail "ERROR: could not mount overlayFS"
+fi
+# create mountpoints inside the new root filesystem-overlay
+mkdir /mnt/newroot/ro
+mkdir /mnt/newroot/rw
+# remove root mount from fstab (this is already a non-permanent modification)
+grep -v "$rootDev" /mnt/lower/etc/fstab > /mnt/newroot/etc/fstab
+echo "#the original root mount has been removed by overlayRoot.sh" >> /mnt/newroot/etc/fstab
+echo "#this is only a temporary modification, the original fstab" >> /mnt/newroot/etc/fstab
+echo "#stored on the disk can be found in /ro/etc/fstab" >> /mnt/newroot/etc/fstab
+# change to the new overlay root
+cd /mnt/newroot
+pivot_root . mnt
+exec chroot . sh -c "$(cat <<END
+# move ro and rw mounts to the new root
+mount --move /mnt/mnt/lower/ /ro
+if [ $? -ne 0 ]; then
+    echo "ERROR: could not move ro-root into newroot"
+    /bin/bash
+fi
+mount --move /mnt/mnt/rw /rw
+if [ $? -ne 0 ]; then
+    echo "ERROR: could not move tempfs rw mount into newroot"
+    /bin/bash
+fi
+# unmount unneeded mounts so we can unmout the old readonly root
+umount /mnt/mnt
+umount /mnt/proc
+umount /mnt/dev
+umount /mnt
+# continue with regular init
+exec /sbin/init
+END
+)"

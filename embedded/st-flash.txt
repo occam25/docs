@@ -1,0 +1,3 @@
+st-flash read ./saved.img 0x8000000 0x1000
+st-flash erase
+st-flash write ./saved.img 0x8000000

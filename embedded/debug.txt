@@ -1,0 +1,11 @@
+
+st-util: se queda a la escucha para que se conecte gdb
+
+GDB
+target remote localhost:4242
+info registers
+x/10i $pc+1
+
+ST-FLASH
+st-flash read original.bin 0x08000000 32768 : lee 32768 bytes (0x8000) de la flash y lo guarda en original.bin
+
