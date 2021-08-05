@@ -76,6 +76,8 @@ Note that running with boot=overlay means all writes to the root file system wil
 
 ########################## LO QUE ME HA FUNCIONADO:
 
+http://wiki.psuter.ch/doku.php?id=solve_raspbian_sd_card_corruption_issues_with_read-only_mounted_root_partition
+
 solve raspbian SD card corruption issues with read-only mounted root partition
 Raspbian, the default debian-based distribution that runs on most Raspberry PI's has one significant issue, when the Rpi is used as a headless system which will just be unplugged rather than shut down regularily: It runs ext4 as its root filesystem. Ext4 has a journal which can be easily corrupted when power is lost during a write operation and it is not particularly friendly to or optimized for flash devices.
 
