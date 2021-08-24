@@ -1,0 +1,3 @@
+
+# Ver certificados que usa un servidor
+openssl s_client -connect google.es:443 -showcerts
