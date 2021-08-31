@@ -1,3 +1,9 @@
 
 # Ver certificados que usa un servidor
 openssl s_client -connect google.es:443 -showcerts
+
+# Encriptar fichero
+openssl aes-256-cbc -a -salt -in secrets.txt -out secrets.txt.enc
+
+# Desencriptar fichero
+openssl aes-256-cbc -d -a -in secrets.txt.enc -out secrets.txt.new
