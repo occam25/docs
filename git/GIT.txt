@@ -2,6 +2,10 @@
 git log -p -- <file>
 git log --follow -p -- <file> : lo mismo pero te dice si el fichero fue renombrado
 
+# Git blame
+git blame -L 3122,3160 -w proto/sd/protocolSatData.c 
+
+
 # Eliminar cambios realizados a un fichero:
 git checkout HEAD -- my-file.txt     (-- significa que todo lo que venga a continuacion lo tome como nombre de fichero)
 
