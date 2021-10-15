@@ -13,6 +13,7 @@ sudo apt-get install apparmor-utils
 sudo aa-complain /usr/sbin/gpsd         # Deshabilitar la proteccion para el gpsd (loguea los accesos)
 sudo aa-enforce /usr/sbin/gpsd          # Para habilitar la proteccion para el gpsd
 sudo aa-unconfined /usr/sbin/gpsd       # Deshabilitar la proteccion para el gpsd
+sudo aa-disable /usr/sbin/gpsd          # Elimine el profile para el gpsd
 
 sudo aa-status                          # Muestra el status
 sudo aa-getprof <application>           # Genera un nuevo profile para la aplicacion (o script)
