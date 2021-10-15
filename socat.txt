@@ -1,3 +1,7 @@
+
+socat STDIO PTY,link=mypty                # crea una interfaz PTY (mypty) que en un link a /dev/pts/[0-9]* y puedes escribir por stdin para enviar al otro extemo y lo que recives es muestra en la misma consola (stdout)
+
+####################################################################################
 Transport serial port over network
 The other end may be provided by ser2net
 
