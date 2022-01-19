@@ -1,3 +1,6 @@
+
+:noautocmd w    : write without autocompletion
+
 OPERATORS
 
 c		: change
