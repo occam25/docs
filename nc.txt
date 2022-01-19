@@ -1,0 +1,3 @@
+
+# Connect to a server, authenticate and send command for each device in list
+(echo telnet_password; sleep 1; grep device_type device_list.txt | awk '{print $1}' | while read i; do echo "cmd $i download iap-900.bin; upgradeiap iap-900.bin; config devicesave"; sleep 1; done) | nc -N localhost 60999 | tee log_device_type
