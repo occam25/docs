@@ -1,3 +1,15 @@
+# Submodules
+Crear fichero .gitmodules con los submodulos a usar, ej:
+[submodule "external/nuttx"]
+        path = external/nuttx
+        url = https://github.com/apache/incubator-nuttx.git
+
+Para bajarse el submodulo la primera vez:
+git submodule update --init --recursive
+
+Si no es la primera vez:
+git submodule update --recursive --remote
+
 # Ver histórico de cambios en un determinado fichero:
 git log -p -- <file>
 git log --follow -p -- <file> : lo mismo pero te dice si el fichero fue renombrado
