@@ -4,7 +4,7 @@ git merge --ff   : solo hace merge si puede hacer fast fordward
 si tengo cambios en mi master:
 git rebase origin/master
 
-commit --ammend : para cambiar el ultimo commit
+commit --amend : para cambiar el ultimo commit
 
 # Submodules
 Crear fichero .gitmodules con los submodulos a usar, ej:
