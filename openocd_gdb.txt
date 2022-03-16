@@ -1,0 +1,28 @@
+
+# remove flash protection
+openocd -f interface/stlink.cfg -f target/stm32f2x.cfg -c "init; reset halt; stm32f2x unlock 0; reset halt; exit"
+
+# program firmware
+openocd -f interface/stlink.cfg -f target/stm32f2x.cfg -c "program $BINFILE verify reset exit 0x08000000"
+
+# overwrite from the command line the reset-init event configuration defined in stm32h7x.cfg to set a lower speed:
+openocd -f interface/jlink.cfg -f target/stm32h7x.cfg -c "stm32h7x.cpu0 configure -event reset-init {adapter speed 1800}"
+
+# execute openOCD with gdb_memory_map disable to avoid sending the memory map to gdb and gdb_breakpoint_override hard to force the use of hardware breakpoints:
+openocd -f interface/jlink.cfg -f target/kx.cfg -c "gdb_memory_map disable" -c "gdb_breakpoint_override hard"
+# same with olimex-arm-usb-tiny-h debug adapter:
+openocd -f interface/ftdi/olimex-arm-usb-tiny-h.cfg -f target/kx.cfg -c "gdb_memory_map disable" -c "gdb_breakpoint_override hard"
+
+# assert reset before connecting to be able to connect if the fw is using jtag pins:
+openocd -f interface/jlink.cfg -f target/stm32f2x.cfg -c "reset_config trst_and_srst connect_assert_srst"
+
+# assert reset before connecting to be able to connect if the fw is using jtag pins and remove flash protection:
+openocd -f interface/jlink.cfg -f target/stm32f2x.cfg -c "reset_config trst_and_srst connect_assert_srst" -c "init; reset halt; stm32f2x unlock 0; reset halt; exit"
+
+
+# Connecting with gdb
+arm-none-eabi-gdb firmware.elf
+(gdb) target extended-remote localhost:3333       # connects to target
+(gdb) load                                        # loads the firmware (for this to work openocd has to send memory-map)
+(gdb) b main                                      # set breakpoint in main function
+(gdb) run                                         # run the code
