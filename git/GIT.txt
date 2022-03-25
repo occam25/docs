@@ -7,10 +7,9 @@ git rebase origin/master
 commit --amend : para cambiar el ultimo commit
 
 # Submodules
-Crear fichero .gitmodules con los submodulos a usar, ej:
-[submodule "external/nuttx"]
-        path = external/nuttx
-        url = https://github.com/apache/incubator-nuttx.git
+Definidos en .gitmodules
+Add submodule to a folder:
+git submodule add https://github.com/apache/incubator-nuttx.git external/nuttx
 
 Para bajarse el submodulo la primera vez:
 git submodule update --init --recursive
