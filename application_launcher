@@ -1,0 +1,16 @@
+
+To create a launcher, create the file  ~/.local/share/applications/eclipse.desktop with the following lines (Note that you have to change the icon and exec paths to your own):
+[Desktop Entry]
+Type=Application
+Name=Eclipse
+Comment=Eclipse IDE for Embedded C/C++ Developers
+Icon=/home/javi/eclipse/eclipse-embedcpp-2022-03/icon.xpm
+Exec=/home/javi/eclipse/eclipse-embedcpp-2022-03/eclipse
+Terminal=false
+Categories=IDE
+StartupWMClass=Eclipse
+
+Add execution permissions to the file
+chmod +x ~/.local/share/applications/eclipse.desktop
+
+Once this is done, you should be able to find Eclipse in your applications and execute it.
