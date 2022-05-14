@@ -139,3 +139,6 @@ vnoremap <C-c> "+y
 vnoremap <C-d> "+d
 
 nnoremap <C-c> :tabclose<CR>
+
+" Abre nerdtree en cada tab
+autocmd BufWinEnter * NERDTreeMirror
