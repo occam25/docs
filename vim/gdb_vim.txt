@@ -1,3 +1,11 @@
+
+vim main.c
+:packadd termdebug
+:Termdebug main			("main" es el nombre del ejecutable)
+
+Esto abre tres ventanas: una con gdb, otra con terminal y otra con los fuentes.
+Se puede debugar normalmente.
+
 From :h terminal.txt
 
 ==============================================================================
@@ -15,7 +23,7 @@ terminal window.  See |termdebug-prompt| below for details.
 Starting 
 							*termdebug-starting*
 Load the plugin with this command: 
-	packadd termdebug
+	:packadd termdebug
 							*:Termdebug*
 To start debugging use `:Termdebug` or `:TermdebugCommand` followed by the
 command name, for example: 
