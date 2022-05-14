@@ -1,0 +1,66 @@
+From :h terminal.txt
+
+==============================================================================
+6. Debugging				*terminal-debug* *terminal-debugger*
+
+The Terminal debugging plugin can be used to debug a program with gdb and view
+the source code in a Vim window.  Since this is completely contained inside
+Vim this also works remotely over an ssh connection.
+
+When the |+terminal| feature is missing, the plugin will use the "prompt"
+buffer type, if possible.  The running program will then use a newly opened
+terminal window.  See |termdebug-prompt| below for details.
+
+
+Starting 
+							*termdebug-starting*
+Load the plugin with this command: 
+	packadd termdebug
+							*:Termdebug*
+To start debugging use `:Termdebug` or `:TermdebugCommand` followed by the
+command name, for example: 
+	:Termdebug vim
+
+This opens two windows:
+
+gdb window	A terminal window in which "gdb vim" is executed.  Here you
+		can directly interact with gdb.  The buffer name is "!gdb".
+
+program window	A terminal window for the executed program.  When "run" is
+		used in gdb the program I/O will happen in this window, so
+		that it does not interfere with controlling gdb.  The buffer
+		name is "gdb program".
+
+The current window is used to show the source code.  When gdb pauses the
+source file location will be displayed, if possible.  A sign is used to
+highlight the current position, using highlight group debugPC.	 
+
+If the buffer in the current window is modified, another window will be opened
+to display the current gdb position.  You can use `:Winbar` to add a window
+toolbar there.
+
+Focus the terminal of the executed program to interact with it.  This works
+the same as any command running in a terminal window.
+
+When the debugger ends, typically by typing "quit" in the gdb window, the two
+opened windows are closed.
+
+Only one debugger can be active at a time.
+							*:TermdebugCommand*
+If you want to give specific commands to the command being debugged, you can
+use the `:TermdebugCommand` command followed by the command name and
+additional parameters. 
+	:TermdebugCommand vim --clean -c ':set nu'
+
+Both the `:Termdebug` and `:TermdebugCommand` support an optional "!" bang
+argument to start the command right away, without pausing at the gdb window
+(and cursor will be in the debugged window).  For example: >
+	:TermdebugCommand! vim --clean
+
+To attach gdb to an already running executable or use a core file, pass extra
+arguments.  E.g.: 
+	:Termdebug vim core
+	:Termdebug vim 98343
+
+If no argument is given, you'll end up in a gdb window, in which you need to
+specify which command to run using e.g. the gdb `file` command.
