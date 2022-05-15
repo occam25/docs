@@ -147,8 +147,6 @@ vnoremap <C-d> "+d
 
 nnoremap <C-c> :tabclose<CR>
 
-nnoremap <silent> \T :Explore<CR>
-
 " Skip special buffers 
 function! s:bswitch_normal(count, direction)
     " This function switches to the previous or next normal buffer excluding
@@ -182,5 +180,8 @@ function! s:SID()
     return matchstr(expand('<sfile>'), '<SNR>\zs\d\+\ze_SID$')
 endfunction
 
-nnoremap <silent> <leader>bp :<C-u>execute 'call <SNR>' . <SID>SID() . '_bswitch_normal(' . v:count1 . ', "previous")'<CR>
-nnoremap <silent> <leader>bn :<C-u>execute 'call <SNR>' . <SID>SID() . '_bswitch_normal(' . v:count1 . ', "next")'<CR>
+nnoremap <silent> <leader>h :<C-u>execute 'call <SNR>' . <SID>SID() . '_bswitch_normal(' . v:count1 . ', "previous")'<CR>
+nnoremap <silent> <leader>l :<C-u>execute 'call <SNR>' . <SID>SID() . '_bswitch_normal(' . v:count1 . ', "next")'<CR>
+nnoremap <leader>bl :ls<CR>
+nnoremap <silent> <leader>bq :bp <BAR> bd #<CR>
+nnoremap <silent> <leader>t :enew<CR>
