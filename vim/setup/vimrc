@@ -147,6 +147,11 @@ vnoremap <C-d> "+d
 
 nnoremap <C-c> :tabclose<CR>
 
+" Function to check if NerdTree is opened (handy function but not used yet)
+function! IsNerdTreeEnabled()
+    return exists('t:NERDTreeBufName') && bufwinnr(t:NERDTreeBufName) != -1
+endfunction
+
 " Skip special buffers 
 function! s:bswitch_normal(count, direction)
     " This function switches to the previous or next normal buffer excluding
