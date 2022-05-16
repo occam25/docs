@@ -188,3 +188,10 @@ nnoremap <silent> <leader>t :enew<CR>
 
 " Open terminal on the bottom
 nnoremap <silent> <leader>bt :bo term<CR>
+
+" Control window size
+nnoremap <silent> <leader><Up> :exe "resize " . (winheight(0) + 5)<CR>
+nnoremap <silent> <leader><Down> :exe "resize " . (winheight(0) - 5)<CR>
+nnoremap <silent> <leader><Right> :exe "vertical resize " . (winwidth(0) + 5)<CR>
+nnoremap <silent> <leader><Left> :exe "vertical resize " . (winwidth(0) - 5)<CR>
+
