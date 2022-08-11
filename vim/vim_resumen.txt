@@ -1,6 +1,8 @@
 
 :noautocmd w    : write without autocompletion
 
+set tabstop=8 softtabstop=0 expandtab shiftwidth=4 smarttab   : set tab with to 4
+
 OPERATORS
 
 c		: change
