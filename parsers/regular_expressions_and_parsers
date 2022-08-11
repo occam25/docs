@@ -1,4 +1,8 @@
 
+Print last column, in this case the name of the files
+ls target/ -l | awk '{print $(NF)}'
+
+
 Select lines NOT containing string: dczwave
 ^((?!dczwave).)*$
 
