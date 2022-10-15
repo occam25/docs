@@ -1,0 +1,19 @@
+
+arm-none-eabi-objdump -h main.elf                           : show sections
+
+arm-none-eabi-objdump -s main.elf                           : Display the full contents of all sections requested
+
+arm-none-eabi-objdump -s -j .rodata main.                   : show .rodata section content
+
+arm-none-eabi-objdump -d main.elf > main.lst                : disassemble contents of executable sections
+
+arm-none-eabi-objdump -D main.elf > main.lst                : disassemble contents of ALL sections
+
+arm-none-eabi-objdump -DSl main.elf > main.lst              : -D to disassemble the code of ALL sections 
+                                                              -S to intermix source code with disassembly. 
+                                                              -l to include line numbers and filenames in output
+
+arm-none-eabi-objdump -g main.elf                           : Display debug information in object file
+
+arm-none-eabi-objdump -t main.elf                           : Display the contents of the symbol table(s)
+
