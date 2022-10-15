@@ -1,0 +1,9 @@
+
+
+conda config --set auto_activate_base false
+
+# mostrar environments
+conda info --envs
+
+# activar entorno
+conda activate <entorno>

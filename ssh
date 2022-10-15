@@ -3,3 +3,11 @@
 ssh-keygen
 2. Pasar el fichero id_rsa.pub al sistema embebido y añadir su contenido al .ssh/authorized_keys del sistema embebido
 cat id_rsa.pub >> .ssh/authorized_keys
+
+# Escritorio remoto con ssh y X11 forwarding
+1. En el sistema remoto, comprobar que en /etc/ssh/sshd_config el parametro X11Forwarding esta a yes
+2. Desde el otro sistema conectarse por ssh con el parametro -X: ssh -X pi@raspberrypi.local
+3. Una vez logueado en el sistema, lanzar una aplicacion:
+   ./gtk_production_test
+   Algunas fuentes aconsejan lanzar la aplicacion con el comando nohup:
+   nohup chromium-browser &

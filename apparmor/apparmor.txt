@@ -1,0 +1,34 @@
+
+https://medium.com/information-and-technology/so-what-is-apparmor-64d7ae211ed
+
+apparmor es un service (a diferencia de SELinux que esta en el kernel)
+
+systemctl status apparmor
+systemctl enable apparmor
+systemctl disable apparmor
+
+
+sudo apt-get install apparmor-utils
+
+sudo aa-complain /usr/sbin/gpsd         # Deshabilitar la proteccion para el gpsd (loguea los accesos)
+sudo aa-enforce /usr/sbin/gpsd          # Para habilitar la proteccion para el gpsd
+sudo aa-unconfined /usr/sbin/gpsd       # Deshabilitar la proteccion para el gpsd
+sudo aa-disable /usr/sbin/gpsd          # Elimine el profile para el gpsd
+
+sudo aa-status                          # Muestra el status
+sudo aa-getprof <application>           # Genera un nuevo profile para la aplicacion (o script)
+
+Scan then
+
+Inherit: Creates a rule that is denoted by “ix” within the profile, causes the executed binary to inherit permissions from the parent profile.
+
+Child: Creates a rule that is denoted by “Cx” within the profile, requires a sub-profile to be created within the parent profile and rules must be separately generated for this child (prompts will appear when running scans on the parent).
+
+Deny: Creates a rule that AppArmor prepends with “deny” at the start of the line within the profile, causes the parents access to the resource be denied.
+
+Abort: Exits the AppArmor program without saving any changes.
+
+Finish: Exits the AppArmor program but WILL save changes.
+
+
+sudo aa-logprof                         # Lee los logs y actualiza los profiles para ajustar permisos

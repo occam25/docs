@@ -1,0 +1,6 @@
+
+# Generate patch
+diff -ruN original_dir new_dir > my_changes.patch
+
+# Apply patch
+patch -Nsu -p1 < my_changes.patch

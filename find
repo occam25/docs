@@ -1,0 +1,3 @@
+
+# Execute a command in find results
+find . -name module.mk -exec cat {} +

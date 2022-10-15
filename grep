@@ -6,3 +6,6 @@ grep -B 4 'keyword' file
 
 # Show 4 lines after match
 grep -A 4 'keyword' file
+
+# Exact match
+grep "\btext\b" file    : \b is the boundaries

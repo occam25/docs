@@ -1,0 +1,12 @@
+
+# save session
+:mksession my_session.vim
+
+# open vim starting a session
+vim -S my_session.vim
+
+# open a session when vim is already started
+:source my_session.vim
+
+# If you change any session tabs (close/open new), you can save that back using:
+:mks!

@@ -1,0 +1,8 @@
+
+# get the path level. Note the use of $() $() to indicate whitespace as <null><space><null> to substitute spaces with /
+s = a/b/c
+dir_to_up = $(subst $() $(),/,$(foreach d, $(subst /, , $(1)),..))
+
+all:
+	echo $(call dir_to_up, $(s))
+
