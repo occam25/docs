@@ -9,7 +9,7 @@ arm-none-eabi-objdump -d main.elf > main.lst                : disassemble conten
 
 arm-none-eabi-objdump -D main.elf > main.lst                : disassemble contents of ALL sections
 
-arm-none-eabi-objdump -DSl main.elf > main.lst              : -D to disassemble the code of ALL sections 
+arm arm-none-eabi-objdump -DSl main.elf > main.lst              : -D to disassemble the code of ALL sections 
                                                               -S to intermix source code with disassembly. 
                                                               -l to include line numbers and filenames in output
 

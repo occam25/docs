@@ -1,4 +1,9 @@
+# Create a new ssh key
+ssh-keygen -t rsa -b 4096 -C "user@email.com"
+eval `ssh-agent -s`
+ssh-add ~/.ssh/id_rsa
 
+# Clone with submodules
 git clone --recurse-submodules https://github.com/chaconinc/MainProject
 
 si no tengo cambios locales
