@@ -5,9 +5,26 @@ Ctrl+b + d			: Deattach
 tmux a -t coco			: Attach a la sesion coco
 tmux a #			: Attach a la ultima sesion creada
 
+Ctrl+b + s        : lista sesiones
+
+Ctrl+b + c        : crea una nueva ventaba tmux
+Ctrl+b + x        : elimina ventaba actual
+Ctrl+b + numero   : salta a la ventana con ese numero
+Ctrl+b + ,        : renombrar la ventana
+Ctrl+b + .        : cambia el numero de ventana (si no esta en uso)
+Ctrl+b + n        : va a la proxima ventana
+Ctrl+b + p        : va a la ventana anterior
+Ctrl+b + w        : mostrar todas las ventanas
+Ctrl+b + [        : Scroll mode
+
+En scroll/copy mode:
+k/j               : subir/bajar con el cursor por la pantalla
+Shift+k/j         : subir/bajar con el cursor por la pantalla manteniendo el cursor fijo
+Ctrl+u/d          : subit/bajar media pantalla
+Ctrl+b/f          : subit/bajar pantalla completa
+
 Ctrl+b + "			: Divide pantalla horizontalmente
 Ctrl+b + %			: Divide pantalla verticalmente
-Ctrl+b + [			: Scroll mode
 Ctrl+b + flecha			: Cambia de ventana
 Ctrl+b + flecha (a la vez)	: Resize ventana
 
