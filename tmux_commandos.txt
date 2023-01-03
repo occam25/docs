@@ -5,6 +5,8 @@ Ctrl+b + d			: Deattach
 tmux a -t coco			: Attach a la sesion coco
 tmux a #			: Attach a la ultima sesion creada
 
+Ctrl+b + d        : Detach sesion (lo mismo que ejecutar 'tmux detach')
+
 Ctrl+b + s        : lista sesiones
 
 Ctrl+b + c        : crea una nueva ventaba tmux
