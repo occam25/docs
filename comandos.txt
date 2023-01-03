@@ -1,0 +1,7 @@
+
+
+rgrep "include \"uart_Debug\.h\"" . | cut -d":" -f1 | xargs sed -i 's/include "uart_Debug.h"/include "util\/uart_Debug.h"/g'
+
+git diff --name-only HEAD^1 | egrep "\.c|\.h" | xargs echo | xargs ./tools/checkpatch.sh -f
+
+find . -name "*.o" | xargs echo | xargs arm-none-eabi-size 

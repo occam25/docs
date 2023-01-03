@@ -1,0 +1,27 @@
+neovim
+
+
+%               Create new file
+d               Create new directory
+:Ex             Show explorer
+:so             Source current file
+:PackerSync     open packer 
+:Mason          open mason 
+
+
+tpope/vim-surround
+ysw'            surround word with '
+ds'             remove surrounding '
+cs"'            change surrounding " with '
+
+inkarkat/vim-ReplaceWithRegister
+grw             replace word with what has been copied in the register
+                Ex.  text1 text2     yw para copiar text1 w para ir a text2  grw para remplazar text2 por text1
+
+numToStr/Comment.nvim
+gcc             comment a line
+gc9j            comment 9 lines down
+gc              (in visual mode) comment selected lines
+
+<leader>rn      rename variable/function name
+
