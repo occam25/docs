@@ -1,4 +1,4 @@
 
-apt-cache policy paquete : informacion sobre el paquete (version.. etc)
-
+apt-cache policy paquete        : informacion sobre el paquete (version.. etc)
+apt-cache madison paquete       : muestra todas las versiones disponibles para instalar
 apt-get install paquete=2.77    : instala una versión específica (que hemos visto que existe con el comando anterior)
