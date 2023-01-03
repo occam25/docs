@@ -1,0 +1,35 @@
+
+sudo add-apt-repository ppa:neovim-ppa/stable
+sudo add-apt-repository ppa:neovim-ppa/unstable
+sudo apt-get update
+sudo apt install neovim python-dev python3-dev python3-pip python3-neovim
+
+Instalada version NVIM v0.9.0-dev
+
+git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim
+
+https://github.com/ryanoasis/nerd-fonts.git  -> descargar la release de Meslo.zip en ~/.local/share/fonts/
+
+Borrar las de windows que no hacen falta (en ~/.local/share/fonts/)
+rm *Windows*
+
+Actualizar fonts:
+fc-cache -fv
+
+cerrar terminal y abrir otro para que reconozca las fuentes
+
+
+sudo apt-get install npm
+sudo apt-get install ripgrep
+sudo apt-get install bear
+
+configurar Meslo fonts en Konsole: Preferencias->Gestionar perfiles -> Nuevo: dar nombre y, en Aspecto, escoger la fuente MesloLGM Nerd Font
+Fijar este perfil como por omision
+cerrar terminal y abrir otro (sino algunos iconos no los reconoce bien)
+
+copiar .config/nvim a ~/.config/nvim 
+eliminar, de existir, la carpeta ~/.config.nvim/plugin (esa carpeta se autogenera)
+
+ejecutar:
+nvim  ~/.config/nvim/lua/javi/plugins-setup.lua
+al guardar el fichero se instalan los plugins
