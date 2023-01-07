@@ -25,6 +25,11 @@ Shift+k/j         : subir/bajar con el cursor por la pantalla manteniendo el cur
 Ctrl+u/d          : subit/bajar media pantalla
 Ctrl+b/f          : subit/bajar pantalla completa
 
+En este modo se puede seleccionar texto y copiat pulsando Enter o y
+Ctrl+b + ]        : pegar lo que se haya copiado
+
+
+
 Ctrl+b + "			: Divide pantalla horizontalmente
 Ctrl+b + %			: Divide pantalla verticalmente
 Ctrl+b + flecha			: Cambia de ventana

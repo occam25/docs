@@ -33,7 +33,14 @@ return packer.startup(function(use)
 
 	use("nvim-lua/plenary.nvim") -- lua functions that many plugins use
 
-	use("bluz71/vim-nightfly-guicolors") -- preferred colorscheme
+	-- use("bluz71/vim-nightfly-guicolors") -- preferred colorscheme
+	use({
+		"rose-pine/neovim",
+		as = "rose-pine",
+		config = function()
+			vim.cmd("colorscheme rose-pine")
+		end,
+	})
 
 	use("christoomey/vim-tmux-navigator") -- tmux & split window navigation
 
@@ -95,6 +102,9 @@ return packer.startup(function(use)
 			ts_update()
 		end,
 	})
+
+	-- harpoon
+	use("theprimeagen/harpoon")
 
 	-- auto closing
 	use("windwp/nvim-autopairs") -- autoclose parens, brackets, quotes, etc...
