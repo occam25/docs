@@ -1,7 +1,14 @@
 
 sudo apt-get install tmux
 
-copiar .tmux.conf a ~/.tmux.conf
-
 Instalar tpm (tmux plugin manager)
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+
+copiar .tmux.conf a ~/.tmux.conf
+
+Una vez dentro de tmux, para instalar los plugins listados en el fichero de configuracion,
+hacer:
+Ctrl+<Space> + I 
+
+
+
