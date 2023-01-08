@@ -11,3 +11,8 @@ cat id_rsa.pub >> .ssh/authorized_keys
    ./gtk_production_test
    Algunas fuentes aconsejan lanzar la aplicacion con el comando nohup:
    nohup chromium-browser &
+
+# Añadir key
+ssh-add ~/.ssh/id_rsa
+eval `ssh-agent -s`
+
