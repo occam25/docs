@@ -5,3 +5,6 @@ rgrep "include \"uart_Debug\.h\"" . | cut -d":" -f1 | xargs sed -i 's/include "u
 git diff --name-only HEAD^1 | egrep "\.c|\.h" | xargs echo | xargs ./tools/checkpatch.sh -f
 
 find . -name "*.o" | xargs echo | xargs arm-none-eabi-size 
+
+# Encontrar todos los ficheros *.args, hacer el md5 y mostrar los que tienen hash diferente
+find . -name "*.args" | xargs echo | xargs md5sum | sort | uniq -w32
