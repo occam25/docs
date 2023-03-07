@@ -31,6 +31,9 @@ git submodule update --init --recursive
 Si no es la primera vez:
 git submodule update --recursive --remote
 
+Reset recursivo
+git submodule foreach --recursive git reset --hard
+
 # Ver histórico de cambios en un determinado fichero:
 git log -p -- <file>
 git log --follow -p -- <file> : lo mismo pero te dice si el fichero fue renombrado
