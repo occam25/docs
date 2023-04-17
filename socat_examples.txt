@@ -1,0 +1,61 @@
+socat STDIO TCP4:localhost:1234
+netcat -l 1234
+
+$ socat -u STDIO FILE:test.txt,create
+Hello socat!
+$ cat test.txt
+Hello socat!
+
+# single connection
+socat TCP4-LISTEN:81 TCP4:192.168.1.10:80
+
+For multiple connections, use the fork option as used in the examples below:
+
+socat TCP4-LISTEN:81,fork,reuseaddr TCP4:TCP4:192.168.1.10:80
+
+This example listens on port 81, accepts connections, and forwards the connections to port 80 on the remote host.
+
+socat TCP-LISTEN:3307,reuseaddr,fork UNIX-CONNECT:/var/lib/mysql/mysql.sock 
+
+The above example listens on port 3307, accepts connections, and forwards the connections to a Unix socket on the remote host.
+
+
+Implement a simple network-based message collector:
+
+socat -u TCP4-LISTEN:3334,reuseaddr,fork OPEN:/tmp/test.log,creat,append
+
+
+socat transfers data from stdin to the specified multicast address using UDP over port 6666 for both the local and remote connections. The command also tells the interface eth0 to accept multicast packets for the given group:
+
+socat - UDP4-DATAGRAM:224.255.0.1:6666,bind=:6666,ip-add-membership=224.255.0.1:eth0
+
+# conectar dos PTY
+socat -d -d pty,raw,link=ttyUno,echo=0 pty,raw,link=ttyDos,echo=0
+
+socat STDIO PTY,link=pty,rawer,cr
+M14Q2F
+OK
+ATI
+ATI
+M14Q2F
+OK
+
+#create the virtual port
+socat -v PTY,rawer,link=ttyModem,mode=0666 PTY,rawer,link=ttyModemSim,mode=0666
+
+#connect the emulator to the ttyGnssSim side of the emulated port
+./modemEmulator < ttyModemSim > ttyModemSim
+
+./modemEmulator.exp < ~/develop/go-rtos/target/go-linux-none/ttyModemSim > ~/develop/go-rtos/target/go-linux-none/ttyModemSim
+
+#execute the application connected to the other end of the virtual port
+./yourApp ttyGnss
+
+
+socat -v -x /dev/ttyUSB0,b115200,raw PTY,b115200,rawer,link=ttyModemSim,mode=0666
+
+
+socat -v -x /dev/ttyUSB0,rawer,b115200 PTY,rawer,b115200,link=ttyModemSim,mode=0666
+
+
+socat -v -x EXEC:"./modemEmulator.exp",pty,rawer,icanon=0 PTY,rawer,link=ttyModem,mode=0666,icanon=0

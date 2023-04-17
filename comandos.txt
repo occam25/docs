@@ -8,3 +8,22 @@ find . -name "*.o" | xargs echo | xargs arm-none-eabi-size
 
 # Encontrar todos los ficheros *.args, hacer el md5 y mostrar los que tienen hash diferente
 find . -name "*.args" | xargs echo | xargs md5sum | sort | uniq -w32
+
+
+# Creacion de links
+for f in $(find ../../patched/godevice/service -name "modem*.c"); do ln -s $f $(basename $f); done
+
+for f in $(find ../../../patched/godevice/include/service/comms -name "modem*.h"); do ln -s $f $(basename $f); done
+
+    
+    
+    
+ base=`git merge-base HEAD origin/main`; git diff --numstat $base | grep -v -e '=>' -e '^3[[:blank:]]0[[:blank:]].*module[.]mk$' | wc
+ 
+find . -path ./external -prune -o -path ./patched -prune -o -name module.mk -print | xargs grep bignum_core.c
+
+
+ find . -xtype l -delete  : borrar links rotos
+ 
+ # Excluir carpetas en find:
+ find . \( -path ./Deprecated -o -path ./external -o -path ./patched \) -prune -o -name .gitignore -print

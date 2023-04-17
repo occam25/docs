@@ -1,1 +1,31 @@
 qemu-system-arm -M lm3s6965evb -kernel ./nuttx -nographic
+
+
+
+
+sudo apt-get install qemu-kvm
+
+# Create disk image
+qemu-img create -f qcow2 disk1.qcow2 50G
+
+# Create VM
+qemu-system-x86_64 -enable-kvm -cpu host -smp 4 -m 8G -k en-gb -vnc :0 -usbdevice tablet -drive file=disk1.qcow2,if=virtio -cdrom /home/javiercasas/Downloads/Virtual_Machines/ubuntu-20.04.4-desktop-amd64.iso -boot d
+
+# Normal boot
+qemu-system-x86_64 -enable-kvm -cpu host -smp 4 -m 8G -k en-gb -vnc :0 -usbdevice tablet -drive file=disk1.qcow2,if=virtio 
+
+# Host information
+hostnamectl
+
+# CPU information
+lscpu
+
+lspci
+lsusb
+lsmem
+
+# Interactive mode
+qemu-system-x86_64 -enable-kvm -cpu host -smp 4 -m 8G -k en-gb -vnc :0 -usbdevice tablet -drive file=disk1.qcow2,if=virtio -monitor stdio
+
+(qemu) change vnc password     ; to set a vnc password (the use -vnc :0,password=on
+(qemu) system_powerdown
