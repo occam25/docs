@@ -1,5 +1,5 @@
-# see what was changed in each commit
-git whatchanged
+# see what was changed in each commit in current folder
+git whatchanged .
 
 # Create patch from one commit
 git format-patch -1 c28b05efd3
