@@ -12,6 +12,21 @@ ssh-keygen -t rsa -b 4096 -C "user@email.com"
 eval `ssh-agent -s`
 ssh-add ~/.ssh/id_rsa
 
+# Multiple github accounts on same machine -> edit/create ~/.ssh/config file
+$ cat ~/.ssh/config 
+# user1 account
+Host github.com-user1
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_rsa_user1
+
+# user2 account
+Host github.com-user2
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/id_rsa_user2
+
+
 # Clone with submodules
 git clone --recurse-submodules https://github.com/chaconinc/MainProject
 
