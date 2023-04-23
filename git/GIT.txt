@@ -11,6 +11,7 @@ git am < file.patch
 ssh-keygen -t rsa -b 4096 -C "user@email.com"
 eval `ssh-agent -s`
 ssh-add ~/.ssh/id_rsa
+ssh-add -l
 
 # Multiple github accounts on same machine -> edit/create ~/.ssh/config file
 $ cat ~/.ssh/config 
