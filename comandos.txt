@@ -27,3 +27,5 @@ find . -path ./external -prune -o -path ./patched -prune -o -name module.mk -pri
  
  # Excluir carpetas en find:
  find . \( -path ./Deprecated -o -path ./external -o -path ./patched \) -prune -o -name .gitignore -print
+ 
+ find . -not \( -path ./external -prune \) -not \( -path ./patched -prune \) -not \( -path ./Deprecated -prune \) -name types.h

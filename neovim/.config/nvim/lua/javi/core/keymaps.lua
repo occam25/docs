@@ -25,6 +25,7 @@ keymap.set("n", "<leader>sx", ":close<CR>") -- close current split window
 keymap.set("n", "<leader>9", "<C-w>15<") -- decrease split width
 keymap.set("n", "<leader>0", "<C-w>15>") -- increase split width
 
+
 keymap.set("n", "<leader>to", ":tabnew<CR>") -- open new tab
 keymap.set("n", "<leader>tx", ":tabclose<CR>") -- close current tab
 keymap.set("n", "<leader>tn", ":tabn<CR>") --  go to next tab
