@@ -5,3 +5,21 @@
 #define ANSI_COLOR_MAGENTA "\x1b[35m"
 #define ANSI_COLOR_CYAN    "\x1b[36m"
 #define ANSI_COLOR_RESET   "\x1b[0m"
+
+
+#define MIN(a,b)		((a) < (b) ? (a) : (b))
+
+#define REVERSE_WORD(w)      (w) = (((w << 16) & 0xFFFF0000) | ((w >> 16) & 0x0000FFFF)); \
+                             (w) = (((w <<  8) & 0xFF00FF00) | ((w >>  8) & 0x00FF00FF)); \
+                             (w) = (((w <<  4) & 0xF0F0F0F0) | ((w >>  4) & 0x0F0F0F0F)); \
+                             (w) = (((w <<  2) & 0xCCCCCCCC) | ((w >>  2) & 0x33333333)); \
+                             (w) = (((w <<  1) & 0xAAAAAAAA) | ((w >>  1) & 0x55555555));
+
+#define REVERSE_HALFWORD(hw) (hw) = (((hw <<  8) & 0xFF00) | ((hw >>  8) & 0x00FF)); \
+                             (hw) = (((hw <<  4) & 0xF0F0) | ((hw >>  4) & 0x0F0F)); \
+                             (hw) = (((hw <<  2) & 0xCCCC) | ((hw >>  2) & 0x3333)); \
+                             (hw) = (((hw <<  1) & 0xAAAA) | ((hw >>  1) & 0x5555));
+
+#define REVERSE_BYTE(b) 	 (b) = (((b <<  4) & 0xF0) | ((b >>  4) & 0x0F)); \
+                             (b) = (((b <<  2) & 0xCC) | ((b >>  2) & 0x33)); \
+                             (b) = (((b <<  1) & 0xAA) | ((b >>  1) & 0x55));
