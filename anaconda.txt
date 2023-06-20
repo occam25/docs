@@ -7,3 +7,6 @@ conda info --envs
 
 # activar entorno
 conda activate <entorno>
+
+# install nbextensions
+conda install -c conda-forge jupyter_contrib_nbextensions
