@@ -16,7 +16,7 @@ treesitter.setup({
 	autotag = { enable = true },
 	-- ensure these language parsers are installed
 	ensure_installed = {
-		"help",
+		"vimdoc",
 		"c",
 		"cpp",
 		"cmake",
