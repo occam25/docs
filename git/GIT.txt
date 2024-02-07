@@ -68,6 +68,9 @@ git blame -L 3122,3160 -w proto/sd/protocolSatData.c
 # Eliminar cambios realizados a un fichero:
 git checkout HEAD -- my-file.txt     (-- significa que todo lo que venga a continuacion lo tome como nombre de fichero)
 
+# Crear annotated tag
+git tag -a v1.7 -m "Mensage asociado a la tag v1.7"
+
 # Listar tags (con -n muestra la primera linea del tag)
 git tag -n
 git tag -n -l <tag_name>
