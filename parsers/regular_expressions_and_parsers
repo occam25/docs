@@ -37,3 +37,6 @@ echo '<project name="meta-dummy-bsp" path="yocto/meta-dummy-bsp" remote="dummy" 
 
 # Remove color metacharacters
 :% s/\[\d\{2}\;\d\{2}m//gc
+
+# Use bash and sed to substitute strings in several files
+for i in $(rgrep netif_rx_ni . | cut -d':' -f1 | sort | uniq);do sed -i 's/\(.*\) netif_rx_ni\(.*\)/#if (LINUX_VERSION_CODE < KERNEL_VERSION(5,18,0))\n\1 netif_rx_ni\2\n#else\n\1 netif_rx\2\n#endif\n/g' $i;done

@@ -4,6 +4,9 @@ git whatchanged .
 # Create patch from one commit
 git format-patch -1 c28b05efd3
 
+# Create patch from last commit
+git format-patch -n HEAD^
+
 # Apply patch
 git am < file.patch
 
@@ -56,6 +59,7 @@ git submodule foreach --recursive git reset --hard
 # Ver histórico de cambios en un determinado fichero:
 git log -p -- <file>
 git log --follow -p -- <file> : lo mismo pero te dice si el fichero fue renombrado
+git log -Scfg80211_assoc_timeout : Te dice los commits que modifican el numero de ocurrencias de un string. En este caso, me dice que commit elimino la funcion cfg80211_assoc_timeout
 
 # Git blame
 git blame -L 3122,3160 -w proto/sd/protocolSatData.c 
@@ -63,6 +67,9 @@ git blame -L 3122,3160 -w proto/sd/protocolSatData.c
 
 # Eliminar cambios realizados a un fichero:
 git checkout HEAD -- my-file.txt     (-- significa que todo lo que venga a continuacion lo tome como nombre de fichero)
+
+# Crear annotated tag
+git tag -a v1.7 -m "Mensage asociado a la tag v1.7"
 
 # Listar tags (con -n muestra la primera linea del tag)
 git tag -n
