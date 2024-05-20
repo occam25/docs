@@ -194,6 +194,7 @@ git revert 1b65f63a -> commit que quiero revertir. Se crea un nuevo commit que r
 
 git config --global user.name "Javier Casas"
 git config --global user.email "javier.casasmaring@niko.eu"
+git config --global diff.tool meld
 git config --list
 
 git init  -> crea el directorio .git e inicializa el repo local. Si queremos dejar de usar git en ese directorio simplemente borramos esa carpeta
