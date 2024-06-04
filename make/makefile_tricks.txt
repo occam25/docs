@@ -6,3 +6,6 @@ dir_to_up = $(subst $() $(),/,$(foreach d, $(subst /, , $(1)),..))
 all:
 	echo $(call dir_to_up, $(s))
 
+
+# Generate compile_commands.json
+bear make
