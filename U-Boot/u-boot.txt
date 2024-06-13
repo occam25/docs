@@ -1,0 +1,316 @@
+
+=> printenv kernel_addr_r
+kernel_addr_r=0x42000000
+
+=> printenv fdt_addr_r
+fdt_addr_r=0x48000000
+
+=> ext4load mmc 0:4 ${kernel_addr_r} /boot/zImage
+
+=> ext4load mmc 0:4 ${fdt_addr_r} /boot/stm32mp157a-dk1.dtb
+
+=> bootz ${kernel_addr_r} - ${fdt_addr_r}
+
+
+bdinfo
+mw address value:   		mw 0x81000000 0x1234abcd	: escribe 0x1234abcd en la direccion 0x81000000
+md.[bwlq] address times:	md.l 0x81000000 0x8		: muestra ocho longs a partir de la direccion 0x81000000  (si haces enter de nuevo repite desde donde lo dejo)
+mm address			mm 0x0x81000000			: modifica la memoria interactivamente. 'q' para salir, '-' para volver a la direccion anterior, 
+								  'Enter' sin valor para saltar la direccion actual.
+nm como mm pero sin autoincrementar la direccion
+
+cp source_addr dest_addr count					: copia count bytes de source_addr a dest_addr (mw para mover)
+cmp addr1 addr2 count						: compara count bytes de ambas direcciones
+
+printenv [variable]						: ambas imprimen variables de entorno por pantalla (si no se especifica la variable imprimen todas)
+env print [variable]
+echo "$arch"							: imprime el valor de la variable 'arch'
+
+env set variable value						: setea variable=value
+env ask variable "message"					: pide al usuario que introduzca el valor de la variable
+env edit variable						: permite al usuario editar el valor de la variable
+env set variable						: al setear una variable a nada esta se elimina
+saveenv								: salva las variables
+env import $loadaddr $filesize					: importa las variables de $loadaddr
+
+run variable							: ejecuta la variable como si fuera un script
+variable expansion se hace al asignar, si luego la variable cambia este cambio no tiene efecto en la expansion. Para que lo tenga, escapar el $: env set variable echo \$foo
+
+setexpr foo *0x81000000						: setea foo al contenido de la direccion 0x81000000
+setexpr baz $foo + $bar						: setea baz a la suma de foo y bar
+setexpr foo gsub ab+ x "aabbcc"					: sustituye con regex (foo=axcc)
+
+
+Special variables
+-----------------
+ver			: U-Boot version
+stdin, stdout, etderr	: Redirection of STDIO. Immediate impact, see coninfo command
+loadaddr		: Default load address
+filesize		: Size of the loaded file
+bootargs		: Boot arguments passed to Linux command line
+bootcmd			: Default boot command (see boot command and autoboot)
+preboot			: Script executed before autoboot
+ipaddr, netmask, serverip, gatewayip: Network settings
+ethaddr, eth1addr...	: Ethernet MAC address
+
+Loading from storage
+--------------------
+SD/MMC 	- mmc command
+USB 	- usb command
+SATA	- sata command
+NAND	- nand command
+
+filesystems:
+Universal FS access	ls, load commands
+ExtFS			extls, extload commands
+VFAT			fatls, fatload commands
+UBI/UBIFS		ubi command
+
+Loading from SD card example
+----------------------------
+mmc rescan				: lock for mmc devices
+mmc part				: show partitions
+ls mmc 0:1				: ls on partition 1 of device 0
+load mmc 0:1 $loadaddr ID.txt		: load to $loadaddr the content of file ID.txt
+md.b $loadaddr $filesize		: read memory at $loadaddr to see the content of the file just copied
+
+Loading from network example (only UDP support!)
+----------------------------
+env set ethaddr 00:aa:bb:cc:dd:ee	: set MAC (optional!)
+env set ipaddr 192.168.1.200		: set IP
+env set netmask 255.255.255.0		: set netmask
+env set serverip 192.168.1.20		: set server ip address
+ping $serverip				: ping the server
+tftp $loadaddr $serverip:somefile	: Download to memory a file from the server
+dhcp $loadaddr $serverip:somefile	: Ontain settings from DHCP and load file
+
+Loading over serial port (X/Y modem supported, Srecord and kermit protocol)
+------------------------
+loady					: se queda esperando a recibir fichero por el puerto serie y lo carga en $loadaddr
+$ screen -x -r -X exec \!\! sb -T yourbinary.bin
+
+Booting the kernel
+------------------
+Types of images
+(z)Image: 
+- Linux binary (with decompressor)
+- No protection against bitrot (no crc nor hash checks)
+- Just set up registers and jump to it
+- Optional separate Device Tree
+
+uImage:
+- Legacy since forever
+- Wrapper around arbitrary binary
+- CRC32 checksum and small amount of metadata
+- Wraps single file only
+- Optional separate Device Tree
+
+fitImage - multi-component image
+- Based on Device Tree
+- Supports multiple files
+- Configurable checksum algorithm per entry
+- Support digital signatures
+
+Commands:
+bootz 		- (z)Image
+booti		- ARM64 Image
+bootm		- fitImage, uImage
+$bootcmd	- default boot command
+
+Example for bootz:
+env set bootargs root=/dev/mmcblk0p1 rootfstype=ext4 rootwait console=ttyO0,115200
+mmc rescan
+load mmc 0:1 0x82000000 boot/zImage-4.9.82-ti-r102
+load mmc 0:1 0x88000000 boot/dtbs/4.9.82-ti-r102/am335x-pocketbeagle.dtb
+bootz 0x82000000 - 0x88000000
+
+Example for bootm:
+bootm $fitimageaddr					: boot fitImage/uImage
+iminfo $loadaddr					: print image information loaded to $loadaddr
+imxtract $loadaddr kernel@1 0x8a000000			: extract kernel@1 from fitImage/uImage located at $loadaddr to address 0x8a000000
+
+Device tree manipulation
+------------------------
+
+fdt addr		: Tell U-Boot whre the FDT is
+fdt resize		: Add extra space to FDT
+fdt list		: prints device tree one level. A node can be specified.
+fdt print		: Print device tree all levels. A node can be specified.
+fdt set			: Add or change DT entry
+
+Example:
+load mmc 0:1 0x88000000 boot/dtbs/4.9.82-ti-r102/am335x-pocketbeagle.dtb
+fdt addr 0x88000000
+fdt resize
+fdt list				: prints device tree one level
+fdt print /chosen   			: prints chosen node
+fdt set /chosen/ foo bar		: sets chosen's variable foo to bar
+
+gpio command
+------------
+gpio input 45
+gpio set 53
+gpio clear 53
+gpio toggle 53
+
+i2c command
+-----------
+i2c bus			: list available i2c busses
+i2c dev	bus		: select an i2c bus (eg: i2c dev 2)
+i2c probe		: probe for devices on i2c
+i2c speed		: set i2c bus speed
+i2c md			: read registers from i2c device (eg: i2c md 0x1c 0x0 0x8)
+i2c mw			: write registers for i2c device
+
+
+Cargar fitImage en memoria y ver contenido
+------------------------------------------
+fatload mmc 1 0x42000000 fitImage
+iminfo 0x42000000
+
+fdt addr 0x4291d914
+
+
+
+
+
+
+
+
+
+
+
+Cargar imagen en eMMC
+---------------------
+1. Arrancar en serial donwloader mode (BOOT0: 1 BOOT1:0)
+2. sudo uuu -d flash.bin	: graba uboot en emmc0
+3. En u-boot: ums 0 mmc 0:0
+4: Aparece unidad en host para flashear
+
+5: copiar el fichero flash-kontron-mx8mm-2023.04-r0.bin (o flash.bin ?)
+
+
+Actualiar NOR desde U-Boot con un fichero de flash que hemos pasado previamente a la eMMC
+-----------------------------------------------------------------------------------------
+=> mmc rescan
+=> mmc list
+=> mmc dev 0
+=> mmc part
+=> fatls mmc 0:1
+
+# Cargar el fichero de flash en RAM desde la eMMC
+=> load mmc 0:1 0x50000000 flash-kontron-mx8mm-2023.04-r0.bin
+
+# Por si acaso: Cargar la NOR en la direccion 0x51000000 saltando el offset de 0x400 (len = 2MiB - 0x400)
+=> sf probe
+=> sf read 0x51000000 0x400 0x1ffc00
+
+# Borrar NOR entera y grabar el fichero de flash que hemos cargado en RAM al offset 0x400
+# ajustando el numero de bytes que fueron copiados a RAM al cargar el fichero (en hex)
+=> sf erase 0 0x200000
+=> sf write 0x50000000 0x400 0x167318
+
+# (OPCIONAL) Cargar despues de reset y comprobar que ambas memorias son iguales
+=> reset
+=> sf probe
+=> sf read 0x51000000 0 0x200000
+=> mmc rescan
+=> load mmc 0:1 0x50000000 flash-kontron-mx8mm-2023.04-r0.bin
+=> cmp.b 0x50000000 0x51000400 0x167318
+=> reset
+
+setenv jap_bootcmd
+mmc rescan
+mmc dev 0
+setenv loadaddr 0x50000000
+load mmc 0:1 ${loadaddr} fitImage
+setenv bootargs root=/dev/mmcblk0p2 rootwait
+bootm ${loadaddr}
+
+
+
+
+Modificar variables de entorno para que arranque como yo quiero
+---------------------------------------------------------------
+setenv jap_bootcmd 'run vendor_detect_config; mmc rescan; mmc dev 0; setenv loadaddr 0x50000000; load mmc 0:1 ${loadaddr} fitImage; setenv bootargs root=/dev/mmcblk0p2 rootwait; bootm ${loadaddr}'
+
+setenv bootcmd 'run jap_bootcmd;'
+saveenv
+
+
+
+
+
+
+vendor_detect_config=gpio clear ${touch_rst_gpio}; sleep 0.02; gpio set ${touch_rst_gpio}; sleep 0.02; i2c dev 1; if test ${som_type} = 'osm-s'; then setenv board_type -osm-s; else setenv board_type; fi; setenv bootcfg conf-freescale_imx8mm-kontron-bl${board_type}.dtb; setenv bootcfg_ext conf-freescale_imx8mm-kontron-bl${board_type}-extension.dtbo; if i2c probe 0x5d; then echo 'LVDS Panel detected'; setenv bootcfg ${bootcfg}#conf-freescale_imx8mm-kontron-dl${board_type}.dtbo; fi; if test ${extension_board} = 1; then setenv bootcfg ${bootcfg}#${bootcfg_ext}; else setenv bootcfg ${bootcfg}; fi;
+
+setenv vendor_detect_config 'gpio set GPIO4_28;setenv board_type;setenv bootcfg conf-freescale_imx8mm-kontron-bl.dtb; setenv bootcfg_ext conf-freescale_imx8mm-kontron-bl-extension.dtbo; setenv bootcfg ${bootcfg};'
+
+setenv vendor_detect_config 'setenv board_type;setenv bootcfg conf-freescale_imx8mm-kontron-bl.dtb; setenv bootcfg_ext conf-freescale_imx8mm-kontron-bl-extension.dtbo; setenv bootcfg ${bootcfg};'
+
+
+27/05/2024
+==========
+1. Actualizar U-Boot como explicado arriba
+2. Cargar imagen en eMMC desde U-Boot con ums como explicado arriba # las imagenes nuevas ya tienen las particiones creadas correctamente, ya no hace falta hacerlo a mano
+3. Asi no arranca, porque los scripts de U-Boot esperan que existan los ficheros sys_active, fitImage_A y fitImage_B en mmcblk0p1, por lo que primero hay que arrancar ejecutando:
+   mmc rescan; mmc dev 0; setenv loadaddr 0x50000000; load mmc 0:1 ${loadaddr} fitImage; setenv bootargs root=/dev/mmcblk0p2 rootwait; bootm ${loadaddr}
+4. Una vez arrancado, se hace una actualizacion swupdate que ya crea los ficheros en mmcblk0p1
+
+28/05/2024
+==========
+1. Actualizar U-Boot como explicado arriba
+2. Cargar imagen en eMMC desde U-Boot con ums como explicado arriba # las imagenes nuevas ya tienen las particiones creadas correctamente, ya no hace falta hacerlo a mano. Ahora los ficheros sys_active, fitImage_A y fitImage_B ya estan en mmcblk0p1, por lo que ya arranca correctamente
+
+
+setenv vendor_bootcmd 'gpio set GPIO4_28; setenv bootcfg conf-freescale_imx8mm-kontron-bl.dtb; for target in ${vendor_boot_targets}; do run vendor_bootcmd_${target}; done; run vendor_detect_config; mmc rescan; mmc dev 0; setenv loadaddr 0x50000000; load mmc 0:1 ${loadaddr} fitImage; setenv bootargs root=/dev/mmcblk0p2 rootwait; bootm ${loadaddr};'
+
+
+PARA NO VER BOOT LOG EN LA PANTALLA
+===================================
+añadir fbcon=map:2 a bootcmd
+En nuestro u-boot:
+bootargs_base=rootwait fbcon=map:2
+
+
+RESTABLECER UBOOT A SPI NOR
+=============================
+https://docs.kontron-electronics.de/sw/yocto/build-ktn-imx/usage-mx8mm.html
+
+Probing the SPI NOR
+
+=> sf probe
+SF: Detected mx25r1635f with page size 256 Bytes, erase size 4 KiB, total 2 MiB
+Erasing the whole flash
+
+=> sf erase 0 0x200000
+SF: 2097152 bytes @ 0x0 Erased: OK
+Loading the SPL image
+
+=> fatload mmc 1:1 0x40000000 flash.bin
+242688 bytes read in 23 ms (10.1 MiB/s)
+Writing the SPL image (offset: 1 KiB)
+
+=> sf write 0x40000000 0x400 ${filesize}
+device 0 offset 0x400, size 0x3b400
+SF: 242688 bytes @ 0x400 Written: OK
+Loading the U-Boot image
+
+=> fatload mmc 1:1 0x40000000 u-boot.bin
+679544 bytes read in 43 ms (15.1 MiB/s)
+Writing the U-Boot image (offset: 320 KiB)
+
+=> sf write 0x40000000 0x50000 ${filesize}
+device 0 offset 0x50000, size 0xa5e78
+SF: 679544 bytes @ 0x50000 Written: OK
+
+
+
+ UUU
+#####
+sudo uuu FB: flash -raw2sparse mmc0 image-ked-qt-kontron-mx8mm-0.0.0-dev.rootfs.wic
+
+
+Boot hiding the log
+###################
+add fbcon=map:2 to the boot parameters in the u-boot command line
