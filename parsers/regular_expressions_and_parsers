@@ -3,7 +3,10 @@ Print last column, in this case the name of the files
 ls target/ -l | awk '{print $(NF)}'
 
 Remove line that matches pattern:
- sed -i '/current_version.*$/d' /usr/local/.config/TCMATIC/tcmatic.conf
+sed -i '/current_version.*$/d' /usr/local/.config/TCMATIC/tcmatic.conf
+
+Add a string AFTER a pattern:
+sed "/\[info\]/a current_version=$my_ver" /usr/local/.config/TCMATIC/tcmatic.conf     : adds current_version=3.0.0 after lines matching [info]
 
 Select lines NOT containing string: dczwave
 ^((?!dczwave).)*$
