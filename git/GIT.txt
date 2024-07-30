@@ -83,6 +83,13 @@ git cat-file tag <tag_name>   : muestra info del tag
 4) Modificas el mensaje, guardas y cierras, en cada uno de los editores abiertos
 5) git push --force branch-name  : al acabar actualizas remote (OJO! el force rompera las versiones locales de los que se hayan descargado la rama! NUNCA hacerlo en master!!!)
 
+# cambiar el autor de los commits
+1) git rebase -i HEAD~5	: muestra los ultimos 5 commits en el editor
+2) Cambiar la palabra "pick" del principio de linea a "edit" para todo commit que quieras cambiar
+3) Guardas y cierras.
+4) Cambias el primero de los commits que has marcado: git commit --amend --author="Author Name <email@address.com>" --no-edit
+5) Ejecutas 'git rebase --continue' para pasar al siguiente commit a editar. Repites desde el paso 4 hasta que hayas editado todos.
+
 git stash
 git stash pop
 
