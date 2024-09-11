@@ -48,3 +48,8 @@ connmanctl services | sed -rn 's/^.*\s+(\w+.*\w+)\s+wifi_.*/\1/p'
 
 # Use bash and sed to substitute strings in several files
 for i in $(rgrep netif_rx_ni . | cut -d':' -f1 | sort | uniq);do sed -i 's/\(.*\) netif_rx_ni\(.*\)/#if (LINUX_VERSION_CODE < KERNEL_VERSION(5,18,0))\n\1 netif_rx_ni\2\n#else\n\1 netif_rx\2\n#endif\n/g' $i;done
+
+# Update version in config file
+sed -i '/current_version.*$/d' /usr/local/.config/TMAT/tmat.conf
+sed -i "/\[info\]/a current_version=$ver" /usr/local/.config/TMAT/tmat.conf
+
