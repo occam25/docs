@@ -35,6 +35,18 @@ Host github.com-user2
 # Move branch to some commit
 git branch -f main HEAD~3      : move main branch to the 3rd last commit
 
+# Show how far a ref is from nearest tag
+git describe main               : Output is nearest-tag_num-of-commits-in-between-ref
+
+# Pull with rebase
+git pull --rebase
+
+# Remove branch (including remote) using push
+git push origin :foo      : the origin (string before the ':') is empty
+
+# Create a local brach using fetch
+git fetch origin :foo      : the origin (string before the ':') is empty
+
 # Clone with submodules
 git clone --recurse-submodules https://github.com/chaconinc/MainProject
 
