@@ -83,6 +83,9 @@ git log -p -- <file>
 git log --follow -p -- <file> : lo mismo pero te dice si el fichero fue renombrado
 git log -Scfg80211_assoc_timeout : Te dice los commits que modifican el numero de ocurrencias de un string. En este caso, me dice que commit elimino la funcion cfg80211_assoc_timeout
 
+# Mostrar solo merge commits que contengan el string "EMB-42886" en el commit message
+git log --merges --grep EMB-42886
+
 # Mostrar commits the merge entre commits (e0264e2c commit mas reciente)
 git log --oneline --ancestry-path --merges e0264e2c ^e913022f
 
