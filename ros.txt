@@ -1,0 +1,29 @@
+
+https://wiki.ros.org/Installation/Ubuntu
+http://wiki.ros.org/catkin/Tutorials/create_a_workspace
+
+# source the environment
+$ source /opt/ros/noetic/setup.bash
+
+# check ROS environment:
+$ printenv | grep ROS
+
+# source devel
+$ cd ~/catkin_ws
+$ source devel/setup.bash
+
+
+# Create package named "roslab" with std_msgs, rospy and roscpp as dependencies:
+catkin_create_pkg roslab std_msgs rospy roscpp
+
+# Check package direct dependencies:
+rospack depends1 <package>
+
+# Check all package dependencies:
+rospack depends <package>
+
+# Copy a file from another package:
+$ roscp [package_name] [file_to_copy_path] [copy_path]
+
+# Start ROS core
+$ roscore
