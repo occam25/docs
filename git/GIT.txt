@@ -38,6 +38,9 @@ Host github.com-user2
     User git
     IdentityFile ~/.ssh/id_rsa_user2
 
+Set the appropiate reomte in the repo:
+git remote set-url origin git@github.com-user2:user2/repo.git
+
 # Move branch to some commit
 git branch -f main HEAD~3      : move main branch to the 3rd last commit
 
