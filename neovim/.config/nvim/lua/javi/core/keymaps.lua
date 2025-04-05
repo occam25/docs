@@ -10,6 +10,10 @@ local keymap = vim.keymap -- for conciseness
 -- use 'kj ' to exit insert mode
 keymap.set("i", "kj ", "<ESC>")
 
+-- move through buffers
+keymap.set("n", "<leader>j", ":bprevious<CR>")
+keymap.set("n", "<leader>k", ":bnext<CR>")
+
 -- clear search highlights
 keymap.set("n", "<leader>nh", ":nohl<CR>")
 

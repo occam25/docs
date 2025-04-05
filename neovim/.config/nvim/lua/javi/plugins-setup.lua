@@ -63,7 +63,10 @@ return packer.startup(function(use)
 	use("nvim-tree/nvim-web-devicons")
 
 	-- statusline
-	use("nvim-lualine/lualine.nvim")
+	use {
+		'nvim-lualine/lualine.nvim',
+		requires = { 'nvim-tree/nvim-web-devicons', opt = true }
+	}
 
 	-- fuzzy finding w/ telescope
 	use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" }) -- dependency for better sorting performance

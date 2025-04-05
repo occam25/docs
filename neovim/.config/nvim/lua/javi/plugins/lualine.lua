@@ -31,7 +31,11 @@ lualine_nightfly.command = {
 
 -- configure lualine with modified theme
 lualine.setup({
-  options = {
-    theme = lualine_nightfly,
-  },
+    options = {
+        theme = lualine_nightfly,
+    },
+    sections = {
+        lualine_a = {'buffers'},
+        lualine_c = {},
+    },
 })
