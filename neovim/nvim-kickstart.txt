@@ -1,0 +1,5 @@
+https://www.youtube.com/watch?v=m8C0Cq9Uv9o
+
+git clone https://github.com/nvim-lua/kickstart.nvim.git "${XDG_CONFIG_HOME:-$HOME/.config}"/nvim-kickstart
+
+alias nvimk='NVIM_APPNAME="nvim-kickstart" nvim'

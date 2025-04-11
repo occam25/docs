@@ -11,8 +11,8 @@ local keymap = vim.keymap -- for conciseness
 keymap.set("i", "kj ", "<ESC>")
 
 -- move through buffers
-keymap.set("n", "<leader>j", ":bprevious<CR>")
-keymap.set("n", "<leader>k", ":bnext<CR>")
+keymap.set("n", "<leader>h", ":bprevious<CR>")
+keymap.set("n", "<leader>l", ":bnext<CR>")
 
 -- clear search highlights
 keymap.set("n", "<leader>nh", ":nohl<CR>")
@@ -28,7 +28,6 @@ keymap.set("n", "<leader>sx", ":close<CR>") -- close current split window
 
 keymap.set("n", "<leader>9", "<C-w>15<") -- decrease split width
 keymap.set("n", "<leader>0", "<C-w>15>") -- increase split width
-
 
 keymap.set("n", "<leader>to", ":tabnew<CR>") -- open new tab
 keymap.set("n", "<leader>tx", ":tabclose<CR>") -- close current tab
