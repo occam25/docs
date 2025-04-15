@@ -1,0 +1,2 @@
+-- Execute lua command
+:lua require("telescope.builtin").colorscheme({enable_preview=true})
