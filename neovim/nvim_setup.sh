@@ -3,6 +3,7 @@
 sudo add-apt-repository ppa:neovim-ppa/stable
 # add-apt-repository ppa:neovim-ppa/unstable
 sudo apt-get update
+sudo apt-get -y purge neovim neovim-runtime
 sudo apt-get install neovim python3-dev python3-pip python3-neovim xclip
 
 if [ ! -f ~/.local/share/fonts/MesloLGMNerdFont-Regular.ttf ]; then
