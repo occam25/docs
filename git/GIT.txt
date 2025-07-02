@@ -18,6 +18,9 @@ git am < file.patch
 # Apply patch created with git diff
 git apply patch_file.patch
 
+# Show all tags that contain a commit
+git tag --contain  ec0d9020
+
 # Create a new ssh key
 ssh-keygen -t rsa -b 4096 -C "user@email.com"
 eval `ssh-agent -s`
