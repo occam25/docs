@@ -1,5 +1,8 @@
 Nice tutorial: https://learngitbranching.js.org/
 
+# Find which merge commit includes a specific commit
+git log --merges --ancestry-path f5fe3684b6c^..HEAD | tail
+
 # see what was changed in each commit in current folder
 git whatchanged .
 
