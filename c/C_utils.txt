@@ -23,3 +23,60 @@
 #define REVERSE_BYTE(b) 	 (b) = (((b <<  4) & 0xF0) | ((b >>  4) & 0x0F)); \
                              (b) = (((b <<  2) & 0xCC) | ((b >>  2) & 0x33)); \
                              (b) = (((b <<  1) & 0xAA) | ((b >>  1) & 0x55));
+
+
+// Read AT commands from the modem and process them
+static int readCommands(int fd, char *buf, size_t bufSize)
+{
+    int ret;
+    static int bytesInBuf = 0;
+
+    ret = read(fd, &buf[bytesInBuf], bufSize - bytesInBuf);
+    if (ret < 0)
+    {
+        return ret;
+    }
+    else if(ret > 0)
+    {
+        if (verbosity > 1)
+        {
+            char *tmpBuf = (char *)malloc(bufSize - bytesInBuf + 1);
+            memcpy(tmpBuf, &buf[bytesInBuf], ret);
+            tmpBuf[ret] = '\0';
+            for (int i = 0; i < ret; i++)
+            {
+                if (tmpBuf[i] == '\r')
+                {
+                    // substitute carriage return to see the whole commands in the screen
+                    tmpBuf[i] = '#';
+                }
+            }
+            fprintf(stderr, "Read %d bytes from modem: %s\n", ret, tmpBuf);
+            free(tmpBuf);
+        }
+        bytesInBuf += ret;
+
+        int offset = 0;
+        for(int i = 0; i < bytesInBuf; i++)
+        {
+            if(buf[i] == '\r')
+            {
+                buf[i] = '\0';
+                processAtCmd(fd, &buf[offset], i - offset);
+                offset = i+1;
+            }
+        }
+        // Move any leftover data to the start of the buffer
+        if (offset > 0 && offset < bytesInBuf)
+        {
+            memmove(buf, &buf[offset], bytesInBuf-offset);
+        }
+        bytesInBuf -= offset;
+
+        if(bytesInBuf == bufSize)
+        {
+            bytesInBuf = 0;
+        }
+    }
+    return ret;
+}

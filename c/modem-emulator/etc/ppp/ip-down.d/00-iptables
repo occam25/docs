@@ -1,0 +1,12 @@
+#!/bin/sh
+# Execute when a PPP link goes down
+# $1 = interface (e.g. ppp0)
+
+WAN_IFACE="wlp0s20f3"  # Set your WAN interface here
+PPP_IFACE="$1"
+
+# Remove rules added when the PPP link went up
+iptables -t nat -D POSTROUTING -o "$WAN_IFACE" -j MASQUERADE
+iptables -D FORWARD -i "$PPP_IFACE" -o "$WAN_IFACE" -j ACCEPT
+iptables -D FORWARD -i "$WAN_IFACE" -o "$PPP_IFACE" -m state --state ESTABLISHED,RELATED -j ACCEPT
+

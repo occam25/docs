@@ -1,0 +1,14 @@
+/dev/gsmtty2 115200
+
+10.0.0.1:10.0.0.2
+local
+noauth
+noccp
+novj
+noipv6
+nocrtscts
+nodefaultroute
+noipx
+noipdefault
+ktune
+ms-dns 8.8.8.8

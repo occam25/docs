@@ -1,0 +1,189 @@
+#!/bin/expect
+
+set timeout -1
+set chan 0
+set data 0
+set datalen 0
+set echo 1
+
+fconfigure stdout -translation binary
+fconfigure stdin -translation binary
+
+proc echo_puts {with_echo without_echo} {
+    global echo
+    if {$echo == 1} {
+        puts -nonewline $with_echo
+    } else {
+        puts -nonewline $without_echo
+    }
+    flush stdout
+}
+
+proc read_chan {} {
+    global data
+    global chan
+    global datalen
+
+    if {$chan == 0} {
+        return
+    }
+
+    chan event $chan readable
+    if {$datalen > 0} {
+        return
+    }
+
+    puts stderr "------------------ received from server ---------------------------"
+    set data [chan read $chan 1024]
+    set datalen [string length $data]
+    if {$datalen == 0} {
+        puts stderr "Error on socket. Probably closed by the server"
+        chan close $chan
+        set chan 0
+        return
+    }
+    binary scan $data H* printdata
+    puts stderr "Received form socket: $printdata"
+    puts stderr "Total len: $datalen"
+    if {$datalen > 0} {
+        puts -nonewline "+QIURC: \"recv\",1,$datalen\r\n"
+    }
+}
+
+proc close_chan {} {
+    global chan
+    if {$chan != 0 } {
+        chan event $chan readable
+        chan close $chan
+        set chan 0
+    }
+}
+
+expect {
+    ATI\r {echo_puts "ATI\r\r\nQuectel\r\nBG95-M3\r\nRevision: BG95M3LAR02A03\r\n\r\nOK\r\n" "Quectel\r\nBG95-M3\r\nRevision: BG95M3LAR02A03\r\n\r\nOK\r\n"; exp_continue}
+    AT+IPR=*\r {echo_puts "$expect_out(0,string)OK\r\n" "OK\r\n"; exp_continue}
+    ATE0 {echo_puts "ATE0\r\r\nOK\r\n" "0\r";global echo; set echo 0; exp_continue}
+    ATV0 {echo_puts "ATV0\r\r\n" "0\r"; flush stdout; exp_continue}
+    AT\r {echo_puts "AT\r\r\nOK\r\n" "0\r"; exp_continue}
+    AT+QCSQ\r {puts -nonewline "+QCSQ: \"eMTC\",-78,-111,61,-20\r\n0\r"; flush stdout; exp_continue}
+    AT+QMBNCFG="list"\r {puts -nonewline "+QMBNCFG: \"list\",0,1,1,\"ROW_Commercial\",0x09010801,201911271\r\n\
++QMBNCFG: \"list\",1,0,0,\"Non_VoLTE-ATT\",0x09010300,201910241\r\n\
++QMBNCFG: \"list\",2,0,0,\"Commercial-Telefonica\",0x09011902,202106221\r\n\
++QMBNCFG: \"list\",3,0,0,\"Commercial-Rogers\",0x09011701,202101271\r\n\
++QMBNCFG: \"list\",4,0,0,\"Commercial-Vodafone\",0x09011202,202008051\r\n\
++QMBNCFG: \"list\",5,0,0,\"Commercial-DT\",0x09011102,202007021\r\n\
++QMBNCFG: \"list\",6,0,0,\"Commercial-TMO\",0x09010502,202105061\r\n\
++QMBNCFG: \"list\",7,0,0,\"IMSless-Verizon\",0x09010100,201911071\r\n"; exp_continue}
+    at+cgdcont\?\r {puts -nonewline "+CGDCONT: 1,\"IPV4V6\",\"internet.cxn\",\"0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0\",0,0,0\r\n0\r"; exp_continue}
+    AT+CGREG\?\r {puts -nonewline "+CGREG: 0,4\r\n0\r"; exp_continue}
+    AT+CEREG\?\r {puts -nonewline "+CEREG: 0,5\r\n0\r"; exp_continue}
+    AT+COPS\?\r {puts -nonewline "+COPS: 0,2,\"21401\",8\r\n0\r"; exp_continue}
+    AT+CGMM {puts -nonewline "BG95-M3\r\n0\r"; exp_continue}
+    AT+CCID {puts -nonewline "+CCID: 89460800241132419187\r\n0\r"; exp_continue}
+    AT+CGSN {puts -nonewline "867730055848265\r\n0\r"; exp_continue}
+    AT+QGMR {puts -nonewline "BG95M3LAR02A03_23.014.01.014\r\n0\r"; exp_continue}
+    
+    AT+CSQ {puts -nonewline "+CSQ: 99,99\r\n0\r"; exp_continue}
+    
+    at+cgact\? {puts -nonewline "+CGACT: 1,1\r\n0\r"; exp_continue}
+    at+qiclose=*\r {
+        puts -nonewline "0\r"; flush stdout
+        close_chan
+        exp_continue
+    }
+    at+qpowd\r {
+        puts -nonewline "0\r"; flush stdout
+        close_chan
+        exp_continue
+    }
+
+    at+qiopen=*\r {
+        global chan
+        global datalen
+        set CMD $expect_out(0,string)
+        set FIELDS [split $CMD ","]
+        set HOST [string trim [lindex $FIELDS 3] "\""]
+        set PORT [lindex $FIELDS 4]
+        puts stderr "HOST: $HOST"
+        puts stderr "PORT: $PORT"
+        set chan [socket $HOST $PORT]
+        chan configure $chan -translation binary -blocking 0
+        set datalen 0
+        chan event $chan readable "read_chan"
+        puts stderr "chan: $chan"
+
+        puts -nonewline "0\r+QIOPEN: 1,0\r\n"
+        exp_continue
+    }
+    
+    at+qisend=*\r {
+        global chan
+        global data
+
+        if {$chan == 0} {
+            puts stderr "Broken channel"
+            exp_continue
+        }
+
+        set CMD $expect_out(0,string)
+        set FIELDS [split $CMD ","]
+        set msg_len [lindex $FIELDS 1]
+        puts -nonewline "\r\n> "
+        puts stderr "------------------ send to server ---------------------------"
+        puts stderr "msg_len: $msg_len"
+
+        fconfigure stdin -translation binary
+        set mcudata [read stdin $msg_len]
+        fconfigure stdin -translation auto
+        binary scan $mcudata H* printdata
+        puts stderr "MCU data: $printdata"
+
+        # send data through the socket
+        puts -nonewline $chan $mcudata
+        flush $chan
+
+        puts -nonewline "17\r\n"
+        chan event $chan readable "read_chan"
+
+        exp_continue
+    }
+  
+    at+qird=*\r {
+        global data
+        global datalen
+
+        set CMD $expect_out(0,string)
+        set FIELDS [split $CMD ","]
+        set msg_len [string trim [lindex $FIELDS 1] "\r"]
+        puts stderr "qt+qird len: $msg_len bytes"
+
+        binary scan $data H* strdata
+        set strdata_to_send [string range $strdata 0 [expr ($msg_len * 2)-1]]
+        set strdata_pending [string range $strdata [expr ($msg_len * 2)] end]
+        set data_to_send [binary format H* $strdata_to_send]
+        set data [binary format H* $strdata_pending]
+        set datalen [string length $data]
+
+        fconfigure stdout -translation binary
+        puts -nonewline "\r\n+QIRD: $msg_len\r\n"
+        puts -nonewline $data_to_send
+        puts -nonewline "\r\n0\r"
+        flush stdout
+
+        # after 10
+
+        puts stderr "DATALEN: $datalen"
+        if {$datalen == 0} {
+            puts stderr "Re-enabling read event"
+            chan event $chan readable "read_chan"
+        } else {
+            puts -nonewline "+QIURC: \"recv\",1,$datalen\r\n"
+        }
+        exp_continue
+    }
+    
+    AT+*=*\r {puts -nonewline "0\r"; flush stdout; exp_continue}
+    at+*=*\r {puts -nonewline "0\r"; flush stdout; exp_continue}
+}
+
+  
