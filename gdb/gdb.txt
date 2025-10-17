@@ -1,0 +1,12 @@
+(gdb) monitor cortex_m vector_catch all		# interrumpe la ejecucion antes de saltar a la rutina de atencion a la excepcion
+(gdb) apropos symbol				# busca los menus de ayuda sobre un comando
+(gdb) help apropos				# muestra la ayuda de un comando
+
+# habilitar gdb history (gdb soporta CTRL+R como la shell)
+set history save on
+set history size 10000
+set history filename ~/.gdb_history
+
+tracepoints: gdb informa cuando pasa por ahi (similar a breakpoint + continue)
+(gdb) trace foo.c:121
+
