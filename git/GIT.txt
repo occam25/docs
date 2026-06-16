@@ -1,5 +1,17 @@
 Nice tutorial: https://learngitbranching.js.org/
 
+# Restore submodule
+$ git submodule deinit -f external/nimble
+$ rm -rf .git/modules/external/nimble
+$ rm -rf external/nimble
+$ git submodule update --init external/nimble
+
+# Gives the first common ancestor between HEAD and origin/main
+git merge-base HEAD origin/main
+
+# Show all commits since HEAD strayed (deviated) from origin/main
+git log --oneline $(git merge-base HEAD origin/main)..HEAD
+
 # Find which merge commit includes a specific commit
 git log --merges --ancestry-path f5fe3684b6c^..HEAD | tail
 
