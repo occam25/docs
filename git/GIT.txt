@@ -1,5 +1,14 @@
 Nice tutorial: https://learngitbranching.js.org/
 
+# bisect
+git bisect --first-parent   # to bisect from MR to MR
+
+git bisect start
+git bisect bad HEAD
+git bisect good <old_commit>
+git bisect run ./test.sh
+git bisect reset
+
 # Restore submodule
 $ git submodule deinit -f external/nimble
 $ rm -rf .git/modules/external/nimble
